@@ -1,0 +1,74 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/AndroidManifest.xml</file>
+  <line>91</line>
+  <module>PokemonGoOffline.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
+  <problem_class id="AndroidDomInspection" severity="ERROR" attribute_key="WRONG_REFERENCES_ATTRIBUTES">Android Resources Validation</problem_class>
+  <description>Unresolved class 'MapActivity'</description>
+  <highlighted_element>MapActivity</highlighted_element>
+  <language>XML</language>
+  <offset>38</offset>
+  <length>11</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/layout/activity_map.xml</file>
+  <line>7</line>
+  <module>PokemonGoOffline.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/layout/activity_map.xml" />
+  <problem_class id="AndroidDomInspection" severity="ERROR" attribute_key="WRONG_REFERENCES_ATTRIBUTES">Android Resources Validation</problem_class>
+  <description>Unresolved class 'MapActivity'</description>
+  <highlighted_element>MapActivity</highlighted_element>
+  <language>XML</language>
+  <offset>63</offset>
+  <length>11</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/layout/activity_map_capturas.xml</file>
+  <line>44</line>
+  <module>PokemonGoOffline.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/layout/activity_map_capturas.xml" />
+  <problem_class id="AndroidDomInspection" severity="ERROR" attribute_key="WRONG_REFERENCES_ATTRIBUTES">Android Resources Validation</problem_class>
+  <description>Unresolved package 'maps'</description>
+  <highlighted_element>maps</highlighted_element>
+  <language>XML</language>
+  <offset>45</offset>
+  <length>4</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/layout/activity_map_capturas.xml</file>
+  <line>44</line>
+  <module>PokemonGoOffline.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/layout/activity_map_capturas.xml" />
+  <problem_class id="AndroidDomInspection" severity="ERROR" attribute_key="WRONG_REFERENCES_ATTRIBUTES">Android Resources Validation</problem_class>
+  <description>Unresolved class 'SupportMapFragment'</description>
+  <highlighted_element>SupportMapFragment</highlighted_element>
+  <language>XML</language>
+  <offset>50</offset>
+  <length>18</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/layout/activity_pokestop.xml</file>
+  <line>110</line>
+  <module>PokemonGoOffline.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/layout/activity_pokestop.xml" />
+  <problem_class id="AndroidDomInspection" severity="ERROR" attribute_key="WRONG_REFERENCES_ATTRIBUTES">Android Resources Validation</problem_class>
+  <description>Cannot resolve symbol '@color/quantum_black_100'</description>
+  <highlighted_element>@color/quantum_black_100</highlighted_element>
+  <language>XML</language>
+  <offset>22</offset>
+  <length>24</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/layout/activity_treasure_hunt.xml</file>
+  <line>8</line>
+  <module>PokemonGoOffline.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/layout/activity_treasure_hunt.xml" />
+  <problem_class id="AndroidDomInspection" severity="ERROR" attribute_key="WRONG_REFERENCES_ATTRIBUTES">Android Resources Validation</problem_class>
+  <description>Unresolved class 'TreasureHuntActivity'</description>
+  <highlighted_element>TreasureHuntActivity</highlighted_element>
+  <language>XML</language>
+  <offset>31</offset>
+  <length>20</length>
+</problem>
+</problems>

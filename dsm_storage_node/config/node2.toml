@@ -1,0 +1,42 @@
+# DSM Storage Node Configuration for Node 2
+
+[api]
+bind_address = "127.0.0.1"
+port = 8081
+enable_cors = true
+enable_rate_limits = false
+max_body_size = 10485760
+
+[node]
+id = "node_2"
+name = "Local Storage Node 2"
+region = "local"
+operator = "developer"
+version = "1.0.0"
+description = "Local development storage node 2"
+public_key = "test_public_key_2"
+endpoint = "http://127.0.0.1:8081"
+
+[storage]
+engine = "sqlite"
+capacity = 107374182400
+data_dir = "./data2"
+database_path = "./data2/dsm_storage.db"
+assignment_strategy = "DeterministicHashing"
+replication_strategy = "FixedReplicas"
+replica_count = 1
+min_regions = 1
+default_ttl = 0
+enable_pruning = false
+pruning_interval = 3600
+
+[network]
+listen_addr = "127.0.0.1"
+public_endpoint = "http://127.0.0.1:8081"
+port = 8081
+max_connections = 100
+connection_timeout = 30
+bootstrap_nodes = ["http://127.0.0.1:8080"]
+enable_discovery = true
+discovery_interval = 60
+max_peers = 50

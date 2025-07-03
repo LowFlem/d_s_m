@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/dsm_background"
+    tools:context="dsm.vaulthunter.controller.DSMMainActivity">
+
+    <!-- Background with slight gradient overlay -->
+    <ImageView
+        android:id="@+id/backgroundImage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/dsm_bg_main"
+        android:alpha="0.5"
+        android:contentDescription="Background" />
+
+    <!-- Gradient overlay to ensure text visibility -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/dsm_gradient_background" />
+
+    <!-- Top App Logo -->
+    <ImageView
+        android:id="@+id/logoImage"
+        android:layout_width="0dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="24dp"
+        android:contentDescription="@string/app_name_vault_hunter"
+        android:src="@drawable/dsm_logo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.5" />
+
+    <!-- Welcome Text -->
+    <TextView
+        android:id="@+id/textWelcome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:fontFamily="sans-serif-light"
+        android:text="Welcome, Hunter!"
+        android:textColor="@color/dsm_text_primary"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/logoImage" />
+
+    <!-- Character Portrait -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/characterPortraitCard"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
+        app:cardCornerRadius="40dp"
+        app:cardElevation="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textWelcome">
+
+        <ImageView
+            android:id="@+id/characterPortrait"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="Character Portrait"
+            android:scaleType="centerCrop"
+            android:src="@drawable/character_male" />
+
+    </androidx.cardview.widget.CardView>
+
+    <!-- Event Card -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/eventCard"
+        style="@style/DSMCardStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/characterPortraitCard">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:contentDescription="Event Icon"
+                    android:src="@drawable/dsm_event_icon" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="Active Event"
+                    android:textColor="@color/dsm_primary"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:background="@color/dsm_primary_transparent" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/textEvent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:padding="8dp"
+                android:text="No active treasure hunt events"
+                android:textColor="@color/dsm_text_primary"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- Main Menu Buttons -->
+    <Button
+        android:id="@+id/buttonTreasureHunt"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/dsm_button_background"
+        android:drawableStart="@drawable/dsm_treasure_icon"
+        android:drawablePadding="16dp"
+        android:onClick="onTreasureHuntClick"
+        android:padding="16dp"
+        android:text="Start Treasure Hunt"
+        android:textColor="@color/dsm_text_primary"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/eventCard" />
+
+    <Button
+        android:id="@+id/buttonTradeTreasures"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/dsm_secondary_button_background"
+        android:drawableStart="@drawable/dsm_trade_icon"
+        android:drawablePadding="16dp"
+        android:onClick="onTradeTreasuresClick"
+        android:padding="16dp"
+        android:text="Trade Treasures"
+        android:textColor="@color/dsm_text_primary"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonTreasureHunt" />
+
+    <Button
+        android:id="@+id/buttonExploreMap"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/dsm_secondary_button_background"
+        android:drawableStart="@drawable/dsm_map_icon"
+        android:drawablePadding="16dp"
+        android:padding="16dp"
+        android:text="Explore Map"
+        android:textColor="@color/dsm_text_primary"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonTradeTreasures" />
+
+    <Button
+        android:id="@+id/buttonOpenVault"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/dsm_accent_button_background"
+        android:drawableStart="@drawable/dsm_vault_icon"
+        android:drawablePadding="16dp"
+        android:padding="16dp"
+        android:text="My Vaults"
+        android:textColor="@color/dsm_text_primary"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonExploreMap" />
+
+    <Button
+        android:id="@+id/buttonMyProfile"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/dsm_secondary_button_background"
+        android:drawableStart="@drawable/dsm_profile_icon"
+        android:drawablePadding="16dp"
+        android:padding="16dp"
+        android:text="My Profile"
+        android:textColor="@color/dsm_text_primary"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonOpenVault" />
+
+    <!-- DSM Network Status -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+            android:id="@+id/networkStatusIcon"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:contentDescription="Network Status"
+            android:src="@drawable/dsm_network_connected" />
+
+        <TextView
+            android:id="@+id/networkStatusText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Connected to DSM Network"
+            android:textColor="@color/dsm_secondary"
+            android:textSize="12sp" />
+
+    </LinearLayout>
+
+    <!-- Token Balance Indicator -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/dsm_token_balance_background"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/characterPortraitCard"
+        app:layout_constraintEnd_toStartOf="@+id/characterPortraitCard"
+        app:layout_constraintTop_toTopOf="@+id/characterPortraitCard">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:contentDescription="DSM Token"
+            android:src="@drawable/dsm_token_icon" />
+
+        <TextView
+            android:id="@+id/tokenBalanceText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:text="500"
+            android:textColor="@color/dsm_accent"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

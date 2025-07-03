@@ -1,0 +1,71 @@
+[package]
+name = "dsm_storage_node"
+version = "0.1.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+description = "Storage node for the Decentralized State Machine (DSM)"
+
+[dependencies]
+url = "2.4.1"
+tokio = { version = "1.32.0", features = ["full"] }
+tracing = "0.1.40"
+tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
+serde = { version = "1.0.188", features = ["derive"] }
+serde_json = "1.0.107"
+thiserror = "1.0.48"
+blake3 = "1.4.0"
+hex = "0.4.3"
+clap = { version = "4.4.3", features = ["derive"] }
+pqcrypto-mlkem = "0.1.0"
+# ❌ REMOVED: pqcrypto-sphincsplus - Using custom DSM SPHINCS+ implementation with BLAKE3
+# ✅ SPHINCS+ now provided by dsm crate with consistent BLAKE3 hashing
+pqcrypto-traits = { version = "0.3.5", features = ["std"] }
+lazy_static = "1.4.0"
+once_cell = "1.19.0"
+subtle = "2.6.1"
+constant_time_eq = "0.3.0"
+rand_chacha = "0.3.1"
+parking_lot = "0.12.1"
+chacha20poly1305 = "0.10.1"
+sha3 = "0.10.8"
+rand = "0.8.5"
+chrono = { version = "0.4.38", features = ["serde"] }
+uuid = { version = "1.1.2", features = ["v4", "serde"] }
+axum = { version = "0.6.20", features = ["macros"] }
+reqwest = { version = "0.11.20", features = ["json"] }
+lru = "0.12.3"
+
+
+rusqlite = { version = "0.29.0", features = ["bundled"] }
+zeroize = { version = "1.6.0", features = ["derive"] }
+base64 = "0.21.4"
+dashmap = "5.5.3"
+tower = "0.4.13"
+tower-http = { version = "0.4.4", features = ["trace", "cors"] }
+config = "0.13.3"
+async-trait = "0.1.73"
+toml = "0.8.20"
+bytes = "1.10.1"
+futures = "0.3.31"
+aes-gcm = "0.10.3"
+bincode = "1.3.3"
+
+# DSM Core Dependencies
+sysinfo = "0.30" # Or the latest compatible version
+anyhow = "1.0.75"
+num-bigint = "0.4.6"
+num-primes = "0.3.0"
+serde_with = "3.12.0"
+
+# Auto-network discovery dependencies
+get_if_addrs = "0.5.3"
+hostname = "0.3.1"
+
+[features]
+default = ["reqwest"]
+reqwest = []
+threadsafe = []
+
+[[bin]]
+name = "storage_node"
+path = "src/bin/storage_node.rs"

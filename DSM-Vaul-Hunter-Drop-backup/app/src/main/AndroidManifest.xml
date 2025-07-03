@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Camera permissions -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus"
+        android:required="false" />
+    
+    <!-- Sensor features -->
+    <uses-feature
+        android:name="android.hardware.sensor.gyroscope"
+        android:required="true" />
+
+    <!-- Internet permissions -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    
+    <!-- Storage permissions -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" 
+                     android:maxSdkVersion="32"
+                     tools:ignore="SelectedPhotoAccess" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+                     android:maxSdkVersion="29" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"
+        tools:ignore="SelectedPhotoAccess" />
+    
+    <!-- Location permissions -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <!-- OpenGL ES 2.0 -->
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true" />
+    
+    <!-- Account permissions -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" 
+                     android:maxSdkVersion="22" />
+    
+    <!-- Bluetooth permissions for Android 12 and below -->
+    <uses-permission android:name="android.permission.BLUETOOTH" 
+                     android:maxSdkVersion="30" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" 
+                     android:maxSdkVersion="30" />
+                     
+    <!-- Bluetooth permissions for Android 12+ -->
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" 
+                     android:usesPermissionFlags="neverForLocation"
+                     tools:targetApi="s" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
+
+    <application
+        android:name="teste.lucasvegi.pokemongooffline.Util.MyApp"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:largeHeap="true"
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true"
+        android:requestLegacyExternalStorage="true">
+        
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+        <!-- Use the original SplashActivity as the entry point -->
+        <activity
+            android:name="teste.lucasvegi.pokemongooffline.Controller.SplashActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        
+        <!-- Original activities that definitely exist -->
+        <activity
+            android:name="teste.lucasvegi.pokemongooffline.Controller.LoginActivity"
+            android:exported="false" />
+            
+        <activity
+            android:name="teste.lucasvegi.pokemongooffline.Controller.CadastrarActivity"
+            android:exported="false" />
+            
+        <activity
+            android:name="teste.lucasvegi.pokemongooffline.Controller.MapActivity"
+            android:exported="false" />
+            
+        <activity
+            android:name="teste.lucasvegi.pokemongooffline.Controller.CapturaActivity"
+            android:exported="false"
+            android:label="@string/app_name" />
+            
+        <activity
+            android:name="teste.lucasvegi.pokemongooffline.Controller.PerfilActivity"
+            android:exported="false" />
+
+        <activity
+            android:name="teste.lucasvegi.pokemongooffline.Controller.PokedexActivity"
+            android:exported="false" />
+            
+        <activity
+            android:name="teste.lucasvegi.pokemongooffline.Controller.DetalhesPokedexActivity"
+            android:exported="false" />
+            
+        <activity
+            android:name="teste.lucasvegi.pokemongooffline.Controller.OvosActivity"
+            android:exported="false"
+            android:screenOrientation="fullSensor"
+            tools:ignore="DiscouragedApi" />
+            
+        <activity
+            android:name="teste.lucasvegi.pokemongooffline.Controller.VocalistUsuriousActivity"
+            android:exported="false" />
+            
+        <activity
+            android:name="teste.lucasvegi.pokemongooffline.Controller.TrocaListaPokemonActivity"
+            android:exported="false" />
+            
+        <activity
+            android:name="teste.lucasvegi.pokemongooffline.Controller.MapCapturasActivity"
+            android:exported="false" />
+            
+        <activity
+            android:name="teste.lucasvegi.pokemongooffline.Controller.PokestopActivity"
+            android:exported="false"
+            android:theme="@style/AppTheme.NoActionBar" />
+            
+        <!-- New DSM Activities -->
+        <activity
+            android:name="teste.lucasvegi.pokemongooffline.Controller.DSMMainActivity"
+            android:exported="false" />
+            
+        <activity
+            android:name="teste.lucasvegi.pokemongooffline.Controller.TreasureHuntActivity"
+            android:exported="false" />
+
+    </application>
+
+</manifest>

@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App Information -->
+    <string name="app_name_vault_hunter">DSM Vault Hunter</string>
+    <string name="app_version">v1.0</string>
+    
+    <!-- Login and Registration -->
+    <string name="login_title">Vault Hunter Login</string>
+    <string name="register_title">Create Hunter Account</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Password</string>
+    <string name="hint_confirm_password">Confirm Password</string>
+    <string name="hint_name">Hunter Name</string>
+    <string name="login_button">Log In</string>
+    <string name="register_button">Register</string>
+    <string name="gender_male">Male</string>
+    <string name="gender_female">Female</string>
+    <string name="character_selection">Select Character</string>
+    
+    <!-- Main Menu -->
+    <string name="welcome_hunter">Welcome, %1$s!</string>
+    <string name="btn_explore_map">Explore Map</string>
+    <string name="btn_treasure_hunt">Start Treasure Hunt</string>
+    <string name="btn_trade_treasures">Trade Treasures</string>
+    <string name="btn_my_profile">My Profile</string>
+    <string name="btn_treasure_dex">Treasure Catalog</string>
+    <string name="btn_vaults">My Vaults</string>
+    <string name="no_active_events">No active treasure hunt events</string>
+    <string name="active_event_info">Active Event: %1$s\nRegion: %2$s\nFrom: %3$s to %4$s</string>
+    
+    <!-- Map Screen -->
+    <string name="map_title">Treasure Map</string>
+    <string name="btn_show_collected">My Collection</string>
+    <string name="btn_show_vaults">Show Vaults</string>
+    <string name="btn_show_treasures">Show Treasures</string>
+    <string name="scan_area">Scan Area</string>
+    <string name="my_location">My Location</string>
+    
+    <!-- Treasure Collection -->
+    <string name="treasure_found">Treasure Found!</string>
+    <string name="treasure_name">%1$s</string>
+    <string name="treasure_collection_success">You found %1$s!</string>
+    <string name="treasure_stats">Power: %1$d | Durability: %2$d</string>
+    <string name="treasure_crystals_found">You found %1$d %2$s Crystals!</string>
+    <string name="btn_collect">Collect</string>
+    <string name="btn_run_away">Run Away</string>
+    
+    <!-- Treasure Details -->
+    <string name="treasure_details_title">Treasure Details</string>
+    <string name="treasure_number">#%03d</string>
+    <string name="treasure_power">Power Level: %1$d</string>
+    <string name="treasure_durability">Durability: %1$d</string>
+    <string name="treasure_weight">Weight: %.2f kg</string>
+    <string name="treasure_size">Size: %.2f cm</string>
+    <string name="treasure_rarity">Rarity: %1$s</string>
+    <string name="treasure_crystal">Crystal Type: %1$s</string>
+    <string name="treasure_upgrade_stage">Current stage: %1$s</string>
+    <string name="treasure_crystals_required">Requires %1$d %2$s Crystals to upgrade</string>
+    <string name="btn_upgrade">Upgrade Treasure</string>
+    <string name="btn_upgrade_not_enough">Not Enough Crystals (%1$d/%2$d)</string>
+    <string name="btn_upgrade_ready">Upgrade Treasure (%1$d/%2$d)</string>
+    <string name="upgrade_success">Treasure upgraded successfully!</string>
+    
+    <!-- Treasure Catalog (Dex) -->
+    <string name="treasure_dex_title">Treasure Catalog</string>
+    <string name="dex_total">Total: %1$d/%2$d</string>
+    <string name="dex_filter_all">All</string>
+    <string name="dex_filter_collected">Collected</string>
+    <string name="dex_filter_not_collected">Not Found</string>
+    <string name="dex_filter_by_type">Filter by Type</string>
+    <string name="dex_sort_by">Sort By</string>
+    <string name="dex_sort_number">Number</string>
+    <string name="dex_sort_name">Name</string>
+    <string name="dex_sort_rarity">Rarity</string>
+    <string name="dex_sort_power">Power</string>
+    
+    <!-- Vault Details -->
+    <string name="vault_details_title">Vault Details</string>
+    <string name="vault_status_locked">LOCKED</string>
+    <string name="vault_status_unlocked">UNLOCKED</string>
+    <string name="vault_status_claimed">CLAIMED</string>
+    <string name="vault_status_withdrawn">WITHDRAWN</string>
+    <string name="vault_status_expired">EXPIRED</string>
+    <string name="vault_difficulty">Difficulty: %1$s</string>
+    <string name="vault_unlock_time">Unlock Time: %1$s</string>
+    <string name="vault_expiry_time">Expiry Time: %1$s</string>
+    <string name="vault_token_reward">Token Reward: %1$d DSM</string>
+    <string name="vault_claimed_by">Claimed By: %1$s</string>
+    <string name="vault_claimed_on">Claimed On: %1$s</string>
+    <string name="vault_distance">You are %1$s away from this vault</string>
+    <string name="vault_locked_description">This vault is currently locked. It will be available for unlocking on %1$s</string>
+    <string name="vault_unlocked_description">You need to be within %1$d meters of the vault to claim its contents.</string>
+    <string name="vault_claimed_description">You have successfully claimed this vault! You can withdraw %1$d DSM tokens to your wallet.</string>
+    <string name="vault_claimed_by_other">This vault has been claimed by another hunter.</string>
+    <string name="vault_withdrawn_description">You have withdrawn %1$d DSM tokens from this vault to your wallet.</string>
+    <string name="vault_withdrawn_by_other">The tokens from this vault have been withdrawn by %1$s</string>
+    <string name="vault_expired_description">This vault has expired and is no longer available.</string>
+    <string name="btn_get_directions">Get Directions</string>
+    <string name="btn_unlock_vault">Unlock Vault</string>
+    <string name="btn_claim_vault">Claim Vault</string>
+    <string name="btn_get_closer">Get Closer to Claim</string>
+    <string name="btn_withdraw">Withdraw to Wallet</string>
+    
+    <!-- Profile Screen -->
+    <string name="profile_title">Hunter Profile</string>
+    <string name="profile_level">Level %1$d</string>
+    <string name="profile_xp">%1$d / %2$d XP to Level %3$d</string>
+    <string name="profile_token_balance">%1$d</string>
+    <string name="profile_token_label">DSM Token Balance</string>
+    <string name="profile_treasures_found">%1$d</string>
+    <string name="profile_treasures_label">Treasures Found</string>
+    <string name="profile_unique_treasures">%1$d</string>
+    <string name="profile_unique_label">Unique Treasures</string>
+    <string name="profile_vaults_opened">%1$d</string>
+    <string name="profile_vaults_label">Vaults Opened</string>
+    <string name="profile_crystal_inventory">Crystal Inventory</string>
+    <string name="profile_crystal_count">x%1$d</string>
+    <string name="profile_no_crystals">No crystals found yet</string>
+    <string name="btn_withdraw_tokens">Withdraw Tokens</string>
+    <string name="btn_view_treasures">View My Treasures</string>
+    
+    <!-- DSM Network -->
+    <string name="dsm_connection_error">Error connecting to DSM network</string>
+    <string name="dsm_connected">Connected to DSM network</string>
+    <string name="dsm_disconnected">Disconnected from DSM network</string>
+    <string name="dsm_token_withdraw_success">%1$d DSM tokens withdrawn successfully</string>
+    <string name="dsm_token_withdraw_error">Error withdrawing tokens</string>
+    
+    <!-- Dialogs -->
+    <string name="dialog_unlock_title">Unlock Vault</string>
+    <string name="dialog_unlock_message">Are you sure you want to unlock this vault?</string>
+    <string name="dialog_claim_title">Claim Vault</string>
+    <string name="dialog_claim_message">Are you sure you want to claim this vault and receive %1$d DSM tokens?</string>
+    <string name="dialog_withdraw_title">Withdraw Tokens</string>
+    <string name="dialog_withdraw_message">Are you sure you want to withdraw %1$d DSM tokens to your wallet?</string>
+    <string name="dialog_btn_confirm">Confirm</string>
+    <string name="dialog_btn_cancel">Cancel</string>
+    <string name="dialog_btn_unlock">Unlock</string>
+    <string name="dialog_btn_claim">Claim</string>
+    <string name="dialog_btn_withdraw">Withdraw</string>
+    
+    <!-- Error Messages -->
+    <string name="error_loading_treasure">Error loading treasure details</string>
+    <string name="error_loading_vault">Error loading vault details</string>
+    <string name="error_vault_not_found">Vault not found</string>
+    <string name="error_not_connected">Not connected to DSM network</string>
+    <string name="error_no_tokens">No tokens available to withdraw</string>
+    <string name="error_location_unavailable">Location not available</string>
+    <string name="error_no_map_app">No map application available</string>
+    <string name="error_too_far">You need to be closer to interact with this vault</string>
+    <string name="error_vault_locked">Vault is not available for unlocking yet</string>
+    <string name="error_vault_unavailable">Vault is not available for claiming</string>
+    <string name="error_only_claimer_withdraw">Only the hunter who claimed this vault can withdraw its tokens</string>
+    
+    <!-- Success Messages -->
+    <string name="success_unlock">Vault unlocked successfully!</string>
+    <string name="success_claim">Vault claimed successfully!</string>
+    <string name="success_withdraw">%1$d DSM tokens withdrawn successfully!</string>
+</resources>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Base application theme (preserved for Pokemon implementation) -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <!-- DSM Vault Hunter theme -->
+    <style name="DSMTheme" parent="Theme.AppCompat.NoActionBar">
+        <!-- Color scheme -->
+        <item name="colorPrimary">@color/dsm_primary</item>
+        <item name="colorPrimaryDark">@color/dsm_primary_dark</item>
+        <item name="colorAccent">@color/dsm_secondary</item>
+        <item name="android:colorBackground">@color/dsm_background</item>
+        <item name="colorSurface">@color/dsm_surface</item>
+        <item name="android:textColorPrimary">@color/dsm_text_primary</item>
+        <item name="android:textColorSecondary">@color/dsm_text_secondary</item>
+        
+        <!-- Window features -->
+        <item name="android:windowBackground">@color/dsm_background</item>
+        <item name="android:navigationBarColor">@color/dsm_background</item>
+        <item name="android:statusBarColor">@color/dsm_background</item>
+        
+        <!-- Button styles -->
+        <item name="buttonStyle">@style/DSMButtonStyle</item>
+        <item name="android:buttonStyle">@style/DSMButtonStyle</item>
+    </style>
+    
+    <!-- DSM Button Style -->
+    <style name="DSMButtonStyle" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/dsm_button_background</item>
+        <item name="android:textColor">@color/dsm_text_primary</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="android:paddingLeft">24dp</item>
+        <item name="android:paddingRight">24dp</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+    
+    <!-- DSM Card Style -->
+    <style name="DSMCardStyle" parent="CardView">
+        <item name="cardBackgroundColor">@color/dsm_surface</item>
+        <item name="cardCornerRadius">12dp</item>
+        <item name="cardElevation">6dp</item>
+        <item name="contentPadding">16dp</item>
+        <item name="android:layout_margin">8dp</item>
+        <item name="cardPreventCornerOverlap">true</item>
+    </style>
+    
+    <!-- DSM EditText Style -->
+    <style name="DSMEditTextStyle" parent="Widget.AppCompat.EditText">
+        <item name="android:background">@drawable/dsm_edit_text_background</item>
+        <item name="android:textColor">@color/dsm_text_primary</item>
+        <item name="android:textColorHint">@color/dsm_text_secondary</item>
+        <item name="android:padding">16dp</item>
+        <item name="android:layout_margin">8dp</item>
+    </style>
+    
+    <!-- DSM Transparent Card Style (for login/registration) -->
+    <style name="DSMTransparentCardStyle" parent="CardView">
+        <item name="cardBackgroundColor">@color/dsm_surface_transparent</item>
+        <item name="cardCornerRadius">16dp</item>
+        <item name="cardElevation">0dp</item>
+        <item name="contentPadding">16dp</item>
+        <item name="android:layout_margin">16dp</item>
+        <item name="cardPreventCornerOverlap">true</item>
+    </style>
+    
+    <!-- DSM Dialog Style -->
+    <style name="DSMDialogStyle" parent="ThemeOverlay.AppCompat.Dialog.Alert">
+        <item name="android:background">@color/dsm_surface</item>
+        <item name="android:textColorPrimary">@color/dsm_text_primary</item>
+        <item name="android:windowBackground">@drawable/dsm_dialog_background</item>
+        <item name="colorAccent">@color/dsm_secondary</item>
+    </style>
+    
+    <!-- DSM Toolbar Style -->
+    <style name="DSMToolbarStyle" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="android:background">@color/dsm_background</item>
+        <item name="android:textColorPrimary">@color/dsm_text_primary</item>
+        <item name="android:textColorSecondary">@color/dsm_text_secondary</item>
+        <item name="titleTextColor">@color/dsm_text_primary</item>
+        <item name="subtitleTextColor">@color/dsm_text_secondary</item>
+    </style>
+    
+    <!-- DSM StatusBar Style with transparency -->
+    <style name="DSMTransparentStatusBar" parent="DSMTheme">
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+</resources>

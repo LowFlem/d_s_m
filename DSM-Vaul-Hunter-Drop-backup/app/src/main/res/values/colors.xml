@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Original Pokemon Colors (preserved for reference) -->
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    
+    <!-- DSM Vault Hunter Colors -->
+    <color name="dsm_primary">#FF00FF</color>          <!-- Magenta/Pink (Primary DSM Brand Color) -->
+    <color name="dsm_primary_dark">#CC00CC</color>     <!-- Darker Magenta -->
+    <color name="dsm_primary_light">#FF66FF</color>    <!-- Lighter Magenta -->
+    
+    <color name="dsm_secondary">#00FFFF</color>        <!-- Cyan/Blue (Secondary DSM Brand Color) -->
+    <color name="dsm_secondary_dark">#00CCCC</color>   <!-- Darker Cyan -->
+    <color name="dsm_secondary_light">#66FFFF</color>  <!-- Lighter Cyan -->
+    
+    <color name="dsm_accent">#FFA500</color>           <!-- Gold/Orange (Accent Color) -->
+    <color name="dsm_accent_dark">#CC8400</color>      <!-- Darker Gold -->
+    <color name="dsm_accent_light">#FFCC66</color>     <!-- Lighter Gold -->
+    
+    <color name="dsm_background">#0D0D1A</color>       <!-- Dark Blue-Black Background -->
+    <color name="dsm_surface">#1A1A2E</color>          <!-- Slightly Lighter Surface Color -->
+    <color name="dsm_black">#000000</color>            <!-- Pure Black -->
+    
+    <!-- Status Colors -->
+    <color name="dsm_locked">#607D8B</color>           <!-- Blue-Grey (Locked Status) -->
+    <color name="dsm_unlocked">#FF9800</color>         <!-- Orange (Unlocked Status) -->
+    <color name="dsm_claimed">#4CAF50</color>          <!-- Green (Claimed Status) -->
+    <color name="dsm_withdrawn">#9C27B0</color>        <!-- Purple (Withdrawn Status) -->
+    <color name="dsm_expired">#F44336</color>          <!-- Red (Expired Status) -->
+    
+    <!-- Text Colors -->
+    <color name="dsm_text_primary">#FFFFFF</color>     <!-- White (Primary Text) -->
+    <color name="dsm_text_secondary">#B3B3B3</color>   <!-- Light Grey (Secondary Text) -->
+    <color name="dsm_text_disabled">#666666</color>    <!-- Darker Grey (Disabled Text) -->
+    
+    <!-- Transparencies -->
+    <color name="dsm_transparent">#00000000</color>    <!-- Fully Transparent -->
+    <color name="dsm_semi_transparent">#80000000</color>       <!-- 50% Black -->
+    <color name="dsm_primary_transparent">#99FF00FF</color>    <!-- 60% Magenta -->
+    <color name="dsm_secondary_transparent">#9900FFFF</color>  <!-- 60% Cyan -->
+    <color name="dsm_background_transparent">#CC0D0D1A</color> <!-- 80% Background -->
+    <color name="dsm_surface_transparent">#991A1A2E</color>    <!-- 60% Surface -->
+</resources>

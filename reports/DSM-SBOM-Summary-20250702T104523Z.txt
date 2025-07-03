@@ -1,0 +1,19 @@
+DSM Protocol SBOM Summary
+========================
+
+Generated: Wed Jul  2 10:45:23 UTC 2025
+Total Components: 851
+Critical Vulnerabilities: 0
+High Vulnerabilities: 0
+Post-Quantum Crypto Components: 18
+License Compliance: ✅ PASS
+
+Key Files:
+- Full Report: /Users/cryptskii/Desktop/claude_workspace/dsm/reports/DSM-SBOM-Report-20250702T104523Z.md
+- SBOM Data: /Users/cryptskii/Desktop/claude_workspace/dsm/sbom/dsm-consolidated-20250702T103149Z.sbom.json
+- Vulnerability Report: /Users/cryptskii/Desktop/claude_workspace/dsm/sbom/vulnerability-report-20250702T103149Z.json
+
+Quick Actions:
+1. Review full markdown report: cat "/Users/cryptskii/Desktop/claude_workspace/dsm/reports/DSM-SBOM-Report-20250702T104523Z.md"
+2. Share report: cp "/Users/cryptskii/Desktop/claude_workspace/dsm/reports/DSM-SBOM-Report-20250702T104523Z.md" ~/Desktop/
+3. Update dependencies: cargo update && npm update

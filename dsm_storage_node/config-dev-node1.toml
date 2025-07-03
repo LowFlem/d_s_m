@@ -1,0 +1,93 @@
+# DSM Dev Storage Node Configuration - Node 1
+# Generated from .env file on Sun Jun 15 01:38:35 EDT 2025
+
+[api]
+bind_address = "0.0.0.0"
+port = 8080
+enable_cors = false
+cors_allow_origins = ["*"]
+enable_rate_limits = false
+max_body_size = 52428800
+
+[node]
+id = "dev-node-1"
+name = "DSM Dev Storage Node 1"
+region = "local"
+operator = "DSM Dev Team"
+version = "0.1.0"
+description = "Development storage node 1 for local testing"
+public_key = ""
+endpoint = "http://192.168.119.22:8080"
+
+[cluster]
+enabled = false
+clusters = []
+overlap_factor = 1
+target_cluster_size = 1
+min_cluster_size = 1
+
+[storage]
+engine = "sqlite"
+capacity = 1073741824
+data_dir = "./data-dev-node1"
+database_path = "./data-dev-node1/storage.db"
+assignment_strategy = "DeterministicHashing"
+replication_strategy = "FixedReplicas"
+replica_count = 3
+min_regions = 1
+default_ttl = 0
+enable_pruning = true
+pruning_interval = 3600
+
+[storage.epidemic]
+gossip_interval_ms = 5000
+reconciliation_interval_ms = 30000
+topology_maintenance_interval_ms = 60000
+gossip_fanout = 3
+max_reconciliation_diff = 1000
+replication_factor = 3
+k_neighbors = 5
+alpha = 0.7
+max_long_links = 10
+max_topology_connections = 50
+topology_connection_timeout_ms = 5000
+cleanup_interval_ms = 300000
+
+[network]
+listen_addr = "0.0.0.0"
+public_endpoint = "http://192.168.119.22:8080"
+port = 8080
+max_connections = 100
+connection_timeout = 300
+enable_discovery = true
+discovery_interval = 300
+max_peers = 10
+peers = []
+
+[security]
+private_key_path = "./keys/dev-node1.key"
+public_key_path = "./keys/dev-node1.pub"
+enable_tls = false
+require_auth = false
+enable_rate_limits = false
+
+[staking]
+enable_staking = false
+
+[mpc]
+enabled = true
+threshold = 1
+max_participants = 1
+session_timeout = 300
+contribution_timeout = 60
+enable_blind_signatures = true
+dbrw_enabled = true
+max_concurrent_sessions = 10
+cleanup_interval = 300
+participant_discovery_timeout = 30
+
+[logging]
+level = "debug"
+file_path = "./logs/dev-node1.log"
+format = "text"
+console_logging = true

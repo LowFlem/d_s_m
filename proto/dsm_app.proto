@@ -1,0 +1,138 @@
+syntax = "proto3";
+package dsm;
+
+// Core DSM Protocol Messages - Single Source of Truth
+// Version: 2.1 - Production Ready
+// NEVER break field numbers - forward compatibility guaranteed
+
+message GenesisRequest {
+  string locale = 1;                    // Device locale for DBRW binding
+  bytes device_entropy = 2;             // Device-specific entropy for MPC
+  string network_id = 3;                // Network identifier (mainnet/testnet)
+}
+
+message GenesisResponse {
+  bytes genesis_hash = 1;               // Primary identity hash (32 bytes)
+  bytes device_id = 2;                  // DBRW-bound device identifier
+  bytes public_key = 3;                 // ML-KEM public key for this genesis
+  uint64 chain_tip = 4;                 // Initial chain position (always 0)
+  bytes smt_root = 5;                   // Sparse Merkle Tree root
+}
+
+message TransferRequest {
+  bytes token_id = 1;                   // Token policy hash
+  bytes recipient_genesis = 2;          // Target genesis hash
+  uint64 amount = 3;                    // Transfer amount (atomic units)
+  bytes nonce = 4;                      // Anti-replay nonce
+  bytes sender_signature = 5;           // SPHINCS+ signature over request
+  uint64 sender_chain_tip = 6;          // Current sender chain position
+  bytes bilateral_commitment = 7;       // Commitment for bilateral isolation
+}
+
+message TransferResponse {
+  bytes tx_id = 1;                      // Transaction hash (deterministic)
+  uint64 chain_tip = 2;                 // New chain position after tx
+  bytes new_state_hash = 3;             // New state hash after application
+  bytes smt_proof = 4;                  // Sparse Merkle inclusion proof
+  bytes bilateral_signature = 5;        // Recipient's bilateral signature
+}
+
+message StateQueryRequest {
+  bytes genesis_hash = 1;               // Target identity to query
+  uint64 from_position = 2;             // Start position for range query
+  uint64 to_position = 3;               // End position (0 = latest)
+  bool include_proofs = 4;              // Whether to include SMT proofs
+}
+
+message StateQueryResponse {
+  bytes current_state_hash = 1;         // Latest state hash
+  uint64 current_position = 2;          // Current chain position
+  repeated StateEntry states = 3;       // Requested state entries
+  bytes smt_root = 4;                   // Current SMT root
+}
+
+message StateEntry {
+  uint64 position = 1;                  // Position in hash chain
+  bytes state_hash = 2;                 // State hash at this position
+  bytes prev_hash = 3;                  // Previous state hash (linkage)
+  bytes operation_data = 4;             // Serialized operation that created state
+  uint64 timestamp = 5;                 // Creation timestamp (deterministic)
+  bytes smt_proof = 6;                  // Inclusion proof (if requested)
+}
+
+message ContactRequest {
+  bytes target_genesis = 1;             // Genesis hash to add as contact
+  string alias = 2;                     // Local alias for this contact
+  bytes verification_challenge = 3;     // Challenge for bilateral verification
+}
+
+message ContactResponse {
+  bytes genesis_hash = 1;               // Confirmed genesis hash
+  bytes public_key = 2;                 // Contact's current public key
+  uint64 chain_tip = 3;                 // Contact's current chain position
+  bytes challenge_response = 4;         // Response to verification challenge
+  bytes bilateral_anchor = 5;           // Bilateral relationship anchor
+}
+
+message TokenPolicyRequest {
+  bytes policy_hash = 1;                // Token policy to query/register
+  bytes creator_genesis = 2;            // Policy creator's genesis
+  bytes policy_data = 3;                // Serialized policy rules
+}
+
+message TokenPolicyResponse {
+  bytes policy_hash = 1;                // Confirmed policy hash
+  bool is_valid = 2;                    // Policy validation result
+  bytes verification_proof = 3;         // Cryptographic proof of validity
+  uint64 total_supply = 4;              // Total token supply (if applicable)
+}
+
+message SyncRequest {
+  bytes genesis_hash = 1;               // Identity to sync
+  uint64 last_known_position = 2;       // Last known chain position
+  repeated bytes peer_list = 3;         // Known peers for this identity
+}
+
+message SyncResponse {
+  bool sync_needed = 1;                 // Whether sync is required
+  repeated StateEntry missing_states = 2; // States to catch up
+  repeated bytes updated_peers = 3;     // Updated peer list
+  bytes new_smt_root = 4;               // Updated SMT root
+}
+
+message Error {
+  uint32 code = 1;                      // Canonical error code
+  string message = 2;                   // Human-readable error message
+  bytes context = 3;                    // Additional error context
+  bool is_recoverable = 4;              // Whether error is recoverable
+}
+
+// Forward-compatible envelope - NEVER break field numbers
+message Envelope {
+  uint32 version = 1;                   // Protocol version
+  uint64 timestamp = 2;                 // Message timestamp
+  bytes message_id = 3;                 // Unique message identifier
+  
+  oneof payload {
+    GenesisRequest genesis_request = 10;
+    GenesisResponse genesis_response = 11;
+    TransferRequest transfer_request = 12;
+    TransferResponse transfer_response = 13;
+    StateQueryRequest state_query_request = 14;
+    StateQueryResponse state_query_response = 15;
+    ContactRequest contact_request = 16;
+    ContactResponse contact_response = 17;
+    TokenPolicyRequest token_policy_request = 18;
+    TokenPolicyResponse token_policy_response = 19;
+    SyncRequest sync_request = 20;
+    SyncResponse sync_response = 21;
+    Error error = 99;
+  }
+}
+
+// Batch operations for efficiency
+message BatchEnvelope {
+  repeated Envelope envelopes = 1;      // Multiple operations in batch
+  bytes batch_signature = 2;           // Signature over entire batch
+  bool atomic_execution = 3;            // Whether batch must execute atomically
+}

@@ -1,0 +1,39 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.4",
+  "serialNumber": "urn:uuid:5914F9A7-9AE5-4B3D-B677-1169D07E982B",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2025-07-02T10:31:51Z",
+    "tools": [
+      {
+        "vendor": "DSM Project",
+        "name": "SBOM Generator",
+        "version": "1.0.0"
+      }
+    ],
+    "component": {
+      "type": "application",
+      "bom-ref": "dsm-android",
+      "name": "DSM Android App",
+      "version": "1.0.0",
+      "description": "DSM Android Mobile Application"
+    }
+  },
+  "components": [
+    {
+      "type": "library",
+      "bom-ref": "kotlin-stdlib",
+      "name": "kotlin-stdlib",
+      "version": "1.8.0",
+      "purl": "pkg:maven/org.jetbrains.kotlin/kotlin-stdlib@1.8.0"
+    },
+    {
+      "type": "library", 
+      "bom-ref": "androidx-core",
+      "name": "androidx.core",
+      "version": "1.9.0",
+      "purl": "pkg:maven/androidx.core/core@1.9.0"
+    }
+  ]
+}

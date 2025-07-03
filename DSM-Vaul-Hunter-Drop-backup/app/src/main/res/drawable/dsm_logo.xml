@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="200dp"
+    android:viewportWidth="200"
+    android:viewportHeight="200">
+    
+    <!-- Outer circle -->
+    <path
+        android:fillColor="@color/dsmPrimary"
+        android:pathData="M100,10 A90,90 0 1,1 100,190 A90,90 0 1,1 100,10" />
+    
+    <!-- Inner circle -->
+    <path
+        android:fillColor="@color/dsmDark"
+        android:pathData="M100,30 A70,70 0 1,1 100,170 A70,70 0 1,1 100,30" />
+    
+    <!-- Center circle -->
+    <path
+        android:fillColor="@color/dsmBackground"
+        android:pathData="M100,75 A25,25 0 1,1 100,125 A25,25 0 1,1 100,75" />
+    
+    <!-- Network lines connecting center to outer edge -->
+    <path
+        android:strokeColor="@color/dsmAccent"
+        android:strokeWidth="5"
+        android:pathData="M100,100 L25,60" />
+    <path
+        android:strokeColor="@color/dsmAccent"
+        android:strokeWidth="5"
+        android:pathData="M100,100 L175,60" />
+    <path
+        android:strokeColor="@color/dsmAccent"
+        android:strokeWidth="5"
+        android:pathData="M100,100 L25,140" />
+    <path
+        android:strokeColor="@color/dsmAccent"
+        android:strokeWidth="5"
+        android:pathData="M100,100 L175,140" />
+    
+    <!-- Node points -->
+    <path
+        android:fillColor="@color/dsmSecondary"
+        android:pathData="M25,60 A10,10 0 1,1 25,40 A10,10 0 1,1 25,60" />
+    <path
+        android:fillColor="@color/dsmSecondary"
+        android:pathData="M175,60 A10,10 0 1,1 175,40 A10,10 0 1,1 175,60" />
+    <path
+        android:fillColor="@color/dsmSecondary"
+        android:pathData="M25,140 A10,10 0 1,1 25,120 A10,10 0 1,1 25,140" />
+    <path
+        android:fillColor="@color/dsmSecondary"
+        android:pathData="M175,140 A10,10 0 1,1 175,120 A10,10 0 1,1 175,140" />
+</vector>

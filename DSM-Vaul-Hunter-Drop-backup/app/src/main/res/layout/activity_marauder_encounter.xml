@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/dsm_background"
+    tools:context="dsm.vaulthunter.controller.MarauderEncounterActivity">
+
+    <!-- Marauder Image -->
+    <ImageView
+        android:id="@+id/marauderImage"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:contentDescription="Marauder"
+        android:src="@drawable/marauder_default"
+        app:layout_constraintBottom_toTopOf="@+id/contentCard"
+        app:layout_constraintDimensionRatio="h,1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.7" />
+
+    <!-- Content Card -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/contentCard"
+        style="@style/DSMCardStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/buttonsLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Alert Banner -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/dsm_expired"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="⚠️ MARAUDER ENCOUNTER ⚠️"
+                android:textColor="@color/dsm_text_primary"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <!-- Marauder Name -->
+            <TextView
+                android:id="@+id/marauderName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:gravity="center"
+                android:text="Vex the Rogue"
+                android:textColor="@color/dsm_primary"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <!-- Marauder Description -->
+            <TextView
+                android:id="@+id/marauderDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:text="Level 5 Marauder\nStrength: 45\n\nA dangerous rogue looking to steal your treasures!"
+                android:textColor="@color/dsm_text_primary"
+                android:textSize="16sp" />
+
+            <!-- Result Text (initially invisible) -->
+            <TextView
+                android:id="@+id/resultText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:gravity="center"
+                android:text="Result goes here"
+                android:textColor="@color/dsm_accent"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:visibility="gone" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- Buttons Layout -->
+    <LinearLayout
+        android:id="@+id/buttonsLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <!-- Fight Button -->
+        <Button
+            android:id="@+id/fightButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:background="@drawable/dsm_button_background"
+            android:onClick="onFightClick"
+            android:padding="16dp"
+            android:text="Fight"
+            android:textColor="@color/dsm_text_primary"
+            android:textSize="18sp" />
+
+        <!-- Flee Button -->
+        <Button
+            android:id="@+id/fleeButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:background="@drawable/dsm_button_background"
+            android:onClick="onFleeClick"
+            android:padding="16dp"
+            android:text="Flee"
+            android:textColor="@color/dsm_text_primary"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

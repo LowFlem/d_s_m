@@ -1,0 +1,18 @@
+[2m2025-07-03T12:20:32.419452Z[0m [32m INFO[0m [2mstorage_node[0m[2m:[0m Loading configuration from "config-dev-node3.toml"
+[2m2025-07-03T12:20:32.420069Z[0m [32m INFO[0m [2mstorage_node[0m[2m:[0m Configuration loaded successfully
+[2m2025-07-03T12:20:32.420090Z[0m [32m INFO[0m [2mstorage_node[0m[2m:[0m Initializing cluster manager with auto-discovery for node 6f5f97ba9762259fd4e8246e530625534759b5a0efb346156fd2b207d0e869a2
+[2m2025-07-03T12:20:32.420106Z[0m [32m INFO[0m [2mdsm_storage_node::auto_network::auto_cluster[0m[2m:[0m Starting auto cluster management for node: 6f5f97ba9762259fd4e8246e530625534759b5a0efb346156fd2b207d0e869a2
+[2m2025-07-03T12:20:32.420124Z[0m [32m INFO[0m [2mdsm_storage_node::auto_network::auto_cluster[0m[2m:[0m Auto cluster management started
+[2m2025-07-03T12:20:32.420128Z[0m [32m INFO[0m [2mstorage_node[0m[2m:[0m Successfully started auto-discovery and dynamic clustering
+[2m2025-07-03T12:20:32.420213Z[0m [32m INFO[0m [2mstorage_node[0m[2m:[0m Initializing SQLite storage engine at ./data-dev-node3/storage.db
+[2m2025-07-03T12:20:32.420220Z[0m [32m INFO[0m [2mdsm_storage_node::storage::sql_storage[0m[2m:[0m Creating new SQLite storage engine with database: "./data-dev-node3/storage.db"
+[2m2025-07-03T12:20:32.420749Z[0m [32m INFO[0m [2mdsm_storage_node::storage::sql_storage[0m[2m:[0m SQLite storage engine initialized successfully
+[2m2025-07-03T12:20:32.420758Z[0m [32m INFO[0m [2mstorage_node[0m[2m:[0m Initializing networking on 0.0.0.0:8082
+[2m2025-07-03T12:20:32.420763Z[0m [32m INFO[0m [2mstorage_node[0m[2m:[0m Network stack initialized. Cluster management handles peer discovery.
+[2m2025-07-03T12:20:32.420783Z[0m [32m INFO[0m [2mdsm_storage_node::logging[0m[2m:[0m [dev-node-3] NetworkConnect completed successfully in 0ms - DSM Storage Node starting on 0.0.0.0:8082
+[2m2025-07-03T12:20:32.421014Z[0m [32m INFO[0m [2mstorage_node[0m[2m:[0m Starting DSM Storage Node server on 0.0.0.0:8082
+[2m2025-07-03T12:20:32.421022Z[0m [32m INFO[0m [2mstorage_node[0m[2m:[0m DSM Storage Node ready to serve requests on 0.0.0.0:8082
+[2m2025-07-03T12:20:32.421089Z[0m [32m INFO[0m [2mstorage_node[0m[2m:[0m [Background] Initializing cluster topology for node 6f5f97ba9762259fd4e8246e530625534759b5a0efb346156fd2b207d0e869a2
+[2m2025-07-03T12:20:32.421106Z[0m [32m INFO[0m [2mstorage_node[0m[2m:[0m [Background] Node 6f5f97ba9762259fd4e8246e530625534759b5a0efb346156fd2b207d0e869a2 participates in clusters: []
+[2m2025-07-03T12:20:32.421111Z[0m [32m INFO[0m [2mstorage_node[0m[2m:[0m [Background] Node 6f5f97ba9762259fd4e8246e530625534759b5a0efb346156fd2b207d0e869a2 has 0 gossip targets
+[2m2025-07-03T12:20:32.421132Z[0m [32m INFO[0m [2mstorage_node[0m[2m:[0m 🚀 DSM Storage Node 6f5f97ba9762259fd4e8246e530625534759b5a0efb346156fd2b207d0e869a2 is now running and healthy!

@@ -1,0 +1,3 @@
+<inspections profile="Android Resources Validation"><group name="Android" path=""><inspection shortName="AndroidDomInspection" defaultSeverity="ERROR" displayName="Android Resources Validation" enabled="true" language="XML" pluginId="org.jetbrains.android" pluginVersion="243.24978.46.2431.13208083" isGlobalTool="false">&lt;html&gt;&lt;body&gt;
+  Validates resource references inside Android XML files.
+&lt;!-- tooltip end --&gt;&lt;/body&gt;&lt;/html&gt;</inspection></group></inspections>

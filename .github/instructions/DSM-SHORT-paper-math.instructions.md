@@ -1,0 +1,1726 @@
+---
+applyTo: "**"
+description: "DSM Protocol Implementation Guide - Quantum-resistant decentralized state machine with bilateral isolation"
+---
+!!IMPORTANT!! NO BUSINESS LOGIC ALLOWED ANYWHERE BUT IN RUST!! HARDWARE USE MINIMALLY IF NEEDED THATS IT
+!! NO FALLBACKS WHATSOEVER ALLOWED - ONLY USE NATIVE BRIDGES TO CALL NATIVE CODE - NO FALLBACKS ALLOWED
+**Protocol Metadata:**
+- Version: 2.1
+- Priority: 100
+- Tags: dsm, cryptography, post-quantum, blockchain, state-machine, offline-transactions, bilateral-isolation, forward-only, mpc, dbrw
+- Last Updated: 2025-06-05
+- Author: DSM Protocol Team
+- Category: protocol-specification
+- Scope: implementation-reference
+- Dependencies: BLAKE3, SPHINCS+, Kyber
+- Maturity Level: production-ready
+- Audience: backend-developers, cryptographers, protocol-implementers
+- Compatibility: mobile, iot, desktop
+- Crypto Suite: post-quantum
+- Network Mode: p2p-offline-capable
+- Consensus Model: none-cryptographic-only
+
+---
+
+# DSM (Decentralized State Machine): Core Concepts and Math
+1. Identity & State: Forward-Only Hash Chain
+• State Evolution:
+Each identity is a straight hash chain (not a blockchain).
+State updates are deterministic, forward-only (irreversible).
+Formula:
+S
+_n = H(S_{n-1} || R_n)
+• S
+n: New state hash
+_
+• S
+_{n-1}: Previous state
+• R
+_n: New randomness / event / transaction
+• H: Cryptographic hash (Blake3, quantum-safe)
+⸻
+2. Sparse Indexing & SMT (Sparse Merkle Tree):
+• Efficient Verification:
+Every state or token update can be proved with a Merkle proof using a Sparse
+Merkle Tree (SMT).
+• Sparse Index:
+Allows for direct, sub-linear verification—no need to traverse the whole chain.
+⸻
+3. Bilateral Isolation & Offline Consistency:
+• Bilateral State Update:
+For peer-to-peer exchange, both parties update their local straight hash chains.
+States are “bilaterally isolated”: both chains progress in lockstep for the
+transaction.
+S
+_A' = H(S_A || tx)
+S
+_B' = H(S_B || tx)
+• No third-party or consensus needed.
+• State sync can happen offline; finality is immediate.
+⸻
+4. Token/Balance Commitments:
+• Token Commitments in State:
+Token balances are embedded directly into the state update, not stored globally.
+Balance Update:
+B
+n = B
+_
+_{n-1} + Δ
+_
+n
+• Δ
+_n: Net token change from tx (can be positive or negative)
+• Double-Spend Prevention:
+Ensured by chain structure—only one valid forward path.
+Constraint:
+∑_{i=0}^{n} Δ
+i ≤ B
+_
+_
+n
+• No negative balance possible
+⸻
+5. Forward-Only Recovery (Key Compromise):
+• Recovery is irreversible:
+If a state is compromised, derive a new state using invalidation marker and new
+randomness.
+S
+_{new} = H(I(S_k) || R_{new})
+• I(S_k): Invalidation marker for compromised state
+• Old branch is dead; chain only continues forward from new state.
+⸻
+6. Genesis State: Decentralized, Blind MPC
+• Genesis Creation:
+The first state (G) is created via threshold MPC or blind commit, ensuring no single
+party controls genesis.
+G = H(b1 || b2 || ... || b_t || Aux)
+• b
+_i: Blind inputs from t parties
+• Aux: Auxiliary domain data
+⸻
+7. No Consensus, No Miners, No Gas:
+• All validation is local and cryptographic;
+no consensus protocol, no miners, no transaction fees (gas).
+⸻
+8. Immediate Finality, True Offline Capability:
+• State transitions are final at the point of local computation.
+• State can be transferred, proven, and updated entirely offline—no
+dependency on internet or global network.
+⸻
+9. Quantum-Resistant Crypto:
+• Uses post-quantum primitives:
+• Hash: Blake3
+• Signatures: SPHINCS+, Kyber, etc.
+⸻
+10. Core Security Guarantee:
+• Tamper-proof: Only forward transitions are valid.
+• No rollbacks, no forks, no re-orgs.
+• Proof-of-Validity = Existence of correct forward hash chain and
+Merkle proof.
+⸻
+11. Protocol Code Structure (in Pseudocode):
+type State = {
+prevHash: string,
+randomness: string,
+merkleRoot: string,
+balances: Record<TokenId, number>,
+// ...other fields (identity, metadata, etc.)
+}
+// Forward-only state transition:
+function evolveState(prev: State, tx: Transaction, randomness: string): State {
+const newBalances = { ...prev.balances }
+// Apply token changes:
+for (const {token, delta} of tx.changes) {
+newBalances[token] = (newBalances[token] || 0) + delta
+if (newBalances[token] < 0) throw new Error("Invalid: Negative balance")
+}
+// Generate next state:
+return {
+prevHash: hashState(prev),
+randomness,
+merkleRoot: updateSMT(prev.merkleRoot, tx),
+balances: newBalances,
+// ...
+}
+}
+⸻
+TL;DR DSM is:
+• Deterministic, quantum-safe, forward-only hash chains
+• Local-only, gas-free, miner-less
+• Merkle proofs for instant verification
+• Bilateral isolation for offline, trustless P2P
+• Finality is immediate; all security is math, not voting
+⸻
+⸻
+DSM vs. CAP Theorem — Production Reference
+⸻
+1. CAP Theorem (Classical Formulation)
+CAP: No distributed system can simultaneously guarantee:
+• Consistency (C): Every read returns the most recent write or an error.
+• Availability (A): Every request receives a (non-error) response.
+• Partition Tolerance (P): The system continues despite arbitrary
+network splits.
+Formal Statement:
+\not\exists S: C(S) \land A(S) \land P(S)
+• Assumes monolithic global state, uniform consistency, tightly coupled
+nodes.
+⸻
+2. DSM’s Rejection of CAP Assumptions
+A. No Global State Synchronization
+• DSM defines per-relationship states:
+\mathcal{G}{DSM} = \{ R{i,j} \mid i \neq j \}
+• Consistency is local:
+Consistent(R_{i,j}) \iff \forall (S^i_m, S^j_p) \in R_{i,j}, \quad Verify(S^i_m, S^j_p)
+= \text{true}
+B. Heterogeneous Consistency
+• Each relationship (pair) can have unique consistency rules:
+ConsistencyDomain(R_{i,j}) \cap ConsistencyDomain(R_{k,l}) = \emptyset \quad
+\forall (i,j) \neq (k,l)
+• No global consensus dependency.
+C. No Global Atomicity
+• Each operation only affects its relationship:
+Execute(op, R_{i,j}) \not\Rightarrow Affects(R_{k,l}), \quad \forall (k,l) \neq (i,j)
+⸻
+3. DSM Bilateral State Model
+A. Decentralized Consistency
+• Global DSM consistency is the conjunction of all pairwise relationships:
+GlobalConsistency_{DSM} = \bigwedge_{i \neq j} Consistent(R_{i,j})
+B. Hash-Linked Verification
+• State integrity is enforced by cryptographic linkage:
+Consistent(R_{i,j}) \iff \forall (S^i_m, S^j_p) \in R_{i,j}, \quad Hash(S^i_m) = S^j_p.
+\text{prev\_hash}
+⸻
+4. CAP Theorem Does Not Apply
+A. CAP Exemption via Bilateral Isolation
+• In DSM, consistency, availability, and partition tolerance are all achieved
+per relationship:
+• Relational Consistency:
+C
+_{DSM}(S) \iff \forall i \neq j,\, Consistent(R_{i,j})
+• Relational Availability:
+A
+_{DSM}(S) \iff \forall op \in O_{i,j},\, Response(op) \neq error
+• Partition Tolerance:
+P
+_{DSM}(S) \iff Partition(i,j) \implies Offline(R_{i,j}) \land \forall (k,l) \neq (i,j),\,
+Operational(R_{k,l})
+• Conclusion:
+C
+_{DSM}(S) \land A_{DSM}(S) \land P_{DSM}(S) = \text{true}
+DSM is not limited by CAP, because its model is not global.
+B. Local Availability Without Quorums
+• Availability is achieved per relationship:
+Available(R_{i,j}) \iff \forall op \in O_{i,j},\, Process(op, R_{i,j}) = true
+⸻
+5. DSM Fault Domain Isolation & Trilemma Solution
+A. Fault Isolation
+• Faults are strictly contained:
+IsolatedFault(R_{i,j}) \implies \forall (k,l) \neq (i,j),\, Fault(R_{i,j}) \not\Rightarrow
+Affects(R_{k,l})
+B. All Three Properties Per Relationship
+• Each bilateral relationship can achieve all CAP properties:
+\bigwedge_{i \neq j} \left(C(R_{i,j}) \land A(R_{i,j}) \land P(R_{i,j})\right)
+C. New Distributed Boundaries
+• Theorem:
+A distributed system with bilateral isolation and cryptographic transitions can
+simultaneously satisfy C, A, P for each relationship domain.
+⸻
+6. DSM in Practice: True Peer-to-Peer Model
+• No miners, no validators, no global consensus
+• Instant finality: State transitions are self-verifying
+• Direct offline P2P transactions:
+• Example flow:
+1. Alice & Bob meet.
+2. Alice pre-commits a transaction to Bob via Bluetooth.
+3. Bob cryptographically verifies and finalizes instantly.
+4. States synchronize to network when online—but validity
+is local and instant.
+• No liquidity/routing issues: Unlike Lightning, there are no channel/
+routing dependencies.
+• Offline = Digital Cash:
+• DSM is the only model where offline digital cash is
+mathematically possible, with no double-spend or counterfeit risk, and
+without online dependency.
+⸻
+Summary Table
+Property Blockchain/Lightning DSM
+Consensus Global (Proof-of-Work, etc.) None (Local cryptography)
+Finality Delayed, needs confirmationsInstant, at device
+Offline Transactions Not possible Fully possible, bilateral
+CAP Limits Yes (global trilemma) No (per-relationship, local only)
+Double Spend Risk Prevented by miners Prevented by forward-only math
+Fault Isolation Weak (global state) Strong (per-relationship)
+⸻
+DSM operates outside CAP by localizing all security and availability.
+Every relationship is an independent, cryptographically self-contained
+system.
+⸻
+8–10. DSM: Cryptographic Trust, Verification, and Architecture — Concise
+Reference
+⸻
+A. Internet Trust: Problems and DSM’s Guarantees
+Centralized Trust Weaknesses
+• Third parties (corporations, states) control identity & funds.
+• Centralized databases are high-value attack targets.
+• Censorship and arbitrary exclusion are possible.
+• Blockchains use slow, energy-heavy consensus and don’t support true
+offline p2p.
+DSM Eliminates Centralized Trust
+• No accounts, no passwords: Identity is embedded in deterministic
+cryptographic state.
+• No validators or miners: No consensus—transactions finalize instantly
+on device.
+• Offline operation: State transitions and verification can happen entirely
+offline.
+• Quantum resistance: Native use of post-quantum primitives (e.g.
+SPHINCS+, Kyber, BLAKE3).
+⸻
+B. DSM Core Guarantees
+• No Forks, No Double-Spend: State can only evolve forward, each state
+links cryptographically to the last.
+• Self-Sovereign Identity: No external accounts, all keys & states are
+user-owned.
+• Instant Finality: Once a new state is generated, it is final and self-
+verifying.
+• Offline + Online Security: State transitions and verifications work
+offline, sync later with no double-spend risk.
+• Post-Quantum Security: All primitives are quantum-safe.
+⸻
+C. DSM Notation Cheat Sheet
+Symbol Description
+S
+_n State at position n (for a given user/device)
+e
+_n Entropy (seed) for state n
+H(x) Cryptographic hash function
+op_n Operation at state n
+\Delta_
+n Token balance delta at state n
+B
+n Token balance at state n
+_
+T
+_n Timestamp at state n
+SMT Sparse Merkle Tree for inclusion proofs
+C Commitment to a future state
+\sigma_n Signature over state n
+pk_r Recipient’s public key
+sk
+_nPrivate key for state n
+SI Sparse Index for checkpoints
+E
+_i Entity (user/device)
+S^j_{E_i} State j of entity E_
+i
+Rel
+_{E_i,E_j} Set of state pairs for transactions between E_i, E_j
+⸻
+D. Core Mechanism: Straight Hash Chain
+State Linking
+S
+_{n+1}.\text{prev\_hash} = H(S_n)
+Validation
+\[
+\text{Verify}(S_i, S_j) = \forall n \in [i+1, j]:\; S_n.\text{prev\hash} = H(S{n-1})
+\]
+S
+_i \rightarrow S_j \iff \text{valid chain exists from } S_i \text{ to } S_j
+Properties:
+• Linear, forward-only.
+• Tamper-proof: state order is encoded in the chain.
+• Simple, no timestamp consensus needed.
+⸻
+E. Efficient Lookups: Sparse Index (SI)
+• SI is a set of periodic checkpoints:
+SI = \{ S_0, S_k, S_{2k}, …, S_{nk} \}
+• To lookup S_
+m:
+• Find previous checkpoint S_{ik}, then traverse forward.
+Trade-off:
+• Larger k: less storage, slower lookup.
+• Smaller k: faster lookup, more checkpoints.
+⸻
+F. Inclusion Proofs: Sparse Merkle Tree (SMT)
+• The root:
+SMT
+_{\text{root}} = H\left(\{ H(S_0), H(S_1), …, H(S_n) \}\right)
+• Membership proof for S
+i:
+_
+\pi = \text{GenerateProof}(SMT, H(S_i))
+\text{VerifyInclusion}(SMT_{\text{root}}, H(S_i), \pi) \in \{ \text{true}, \text{false} \}
+• Logarithmic time proof — don’t need the whole chain.
+⸻
+G. DSM’s Bilateral, Relationship-Based Storage
+• Each entity E_
+i has its own chain:
+Chain
+_{E_i} = [S^0_{E_i}, S^1_{E_i}, …, S^n_{E_i}]
+• Any relationship (pair) E_i, E_j:
+Rel
+_{E_i,E_j} = \left\{ (S^{m_1}{E_i}, S^{p_1}{E_j}),\; (S^{m_2}{E_i}, S^{p_2}{E_j}),
+… \right\}
+• Bilateral isolation:
+• All lookups and proofs are per-pair, not global.
+• Each chain has its own SI and SMT.
+• No global index.
+⸻
+H. Cross-Chain Verification and Continuity
+• E
+i verifies E
+_
+_j by requesting S^0_{E_j} (genesis) and walking the hash
+chain + SMT proofs.
+• E
+_i only cares about Rel_{E_i,E_j} (their own history with E_j), not E_j’s
+unrelated states.
+⸻
+I. Security and Properties
+• Hash chain integrity:
+Pr(\exists S_i \neq S_j: H(S_i) = H(S_j)) \leq \epsilon
+(collision resistance: \epsilon is negligible)
+• Fault isolation:
+• Compromise in one relationship does not affect others.
+• Temporal ordering:
+• Order is cryptographically sequenced.
+• Censorship resistance:
+• Entities evolve privately, no intermediaries.
+• Offline usability:
+• Peer-to-peer finalization; network sync is a convenience, not a
+requirement.
+⸻
+DSM Core in Pseudocode
+// Create new state S_{n+1}
+function createState(S_prev, op, entropy) {
+const state = {
+...applyOperation(S_prev, op),
+prev_hash: hash(S_prev),
+entropy,
+timestamp: Date.now(),
+// signatures/commitments etc.
+};
+return state;
+}
+// Verify a linear chain from S_
+i to S
+_j
+function verifyChain(states: State[]) {
+for (let n = 1; n < states.length; n++) {
+if (states[n].prev_
+hash !== hash(states[n-1])) return false;
+}
+return true;
+}
+// Generate and verify sparse Merkle inclusion
+function generateSMT(states) { /* ...returns SMT root... */ }
+function verifySMT(root, leafHash, proof) { /* ...returns true/false... */ }
+⸻
+Absolutely—here’s a fully consolidated, concrete, production-ready DSM
+account/contact creation and storage workflow, including all core
+cryptographic details, MPC, DBRW, Genesis, and contact management. This
+will be concise, but nothing crucial omitted—a true “core protocol reference” for
+both backend and frontend devs.
+⸻
+DSM Identity & Contact Creation: End-to-End Concrete Workflow
+1. Identity Generation (First Launch / Account Setup)
+Step 1.1: Device Binding with DBRW
+• Device runs DBRW (Dual-Binding Random Walk):
+• Combines cryptographic hardware/environmental fingerprinting
+with entropy.
+• Output: Device-unique secret seed and public “Device ID”.
+Step 1.2: MPC Genesis Creation (Optional for Extra Security)
+• If enabled, the app can use Multi-Party Computation (MPC):
+• Several parties/devices contribute randomness.
+• All parties compute Genesis state deterministically (no party knows
+the whole secret).
+Step 1.3: Genesis State Construction
+• Use seed (from DBRW/MPC) to generate:
+• Genesis Hash (genesis_hash):
+S
+_0 = H(\text{DBRW\_seed} \,\|\, \text{MPC\_entropy?} \,\|\,
+\text{device\_fingerprint})
+• Device ID:
+\text{DeviceID} = H(\text{DBRW\_public})
+• Keypair (for post-quantum signatures):
+• Generate with deterministic seed, e.g. SPHINCS+, Kyber,
+Blake3, etc.
+• Genesis is published to decentralized storage (e.g., IPFS, DSM
+storage node), and its hash becomes your public anchor.
+Summary (What gets stored):
+• Device ID, Genesis hash, public key, and local secret material (secure
+enclave/keystore).
+⸻
+2. Adding a Contact (Counterparty)
+Step 2.1: Initiation (Online Only, One-Time)
+• You enter an alias (“Alice”, “Bob”, etc.).
+• System fetches the counterparty’s Genesis (using provided info, e.g.
+QR scan, or lookup).
+Step 2.2: Genesis Verification
+• System:
+• Fetches Genesis Hash from decentralized storage.
+• Validates Device ID (derived from Genesis/DBRW).
+• Optionally verifies signature/MPC proof.
+Step 2.3: Local Contact Entry Creation
+type DsmContact = {
+alias: string;
+deviceId: string; // From their Genesis
+genesisHash: string; // From decentralized storage
+chainTip?: string; // Set after first tx
+addedAt: number;
+};
+• Fields:
+• alias = user input.
+• deviceId = cryptographic, immutable.
+• genesisHash = online-fetched, for authenticity.
+• chainTip = set after you transact.
+• addedAt = timestamp (optional, for bookkeeping).
+• Storage:
+• Frontend: Shows alias for selection.
+• Backend/Bridge: Manages and verifies deviceId/genesisHash,
+stores and updates chainTip.
+Note:
+• Contacts are mandatory—all transactions require at least one verified
+counterparty with validated genesis.
+• You cannot transact with someone who is not in your contact list.
+⸻
+3. Transaction Preparation & State Management
+Step 3.1: Finding a Contact
+• User selects contact by alias (frontend).
+• System fetches contact by deviceId/genesisHash (backend).
+• Looks up the current chainTip (last shared state index/hash).
+Step 3.2: State Update and Bilateral Chain
+• Transaction is created:
+• References both parties’ latest state.
+• Updates local state chain, increments chainTip.
+Step 3.3: Storage After Transaction
+• Updates:
+• chainTip in your contact record (tracks the latest bilateral state).
+• Each transaction is cryptographically linked to prior state:
+S
+_{n+1} = H(S_n \,\|\, \Delta_{n+1} \,\|\, \text{other fields})
+• Validity is strictly enforced by hash chain logic and cryptographic
+proof.
+Step 3.4: Offline and Online Sync
+• If transaction is done offline (e.g., via Bluetooth):
+• Both parties update their local bilateral chain.
+• When either party reconnects, syncs with the network.
+• ChainTip ensures no state divergence; double-spends are
+impossible.
+⸻
+Summary Table: DSM Contact Storage & Transaction State
+Field Source / Role Used In Updated
+AliasUser input, UI display Frontend On add
+Device ID Genesis/DBRW, immutable Backend/Bridge Never
+Genesis Hash Decentralized storage, verified Backend Never
+Chain Tip Hash/index of last bilateral tx BothAfter tx
+Added At Timestamp (Optional) On add
+⸻
+Code Fragments/Reference Implementations
+Add Contact (Pseudo-Backend):
+function addContact(alias: string, theirGenesisHash: string) {
+const theirDeviceId = getDeviceIdFromGenesis(theirGenesisHash);
+if (!verifyGenesis(theirGenesisHash, theirDeviceId)) throw Error("Invalid
+Genesis");
+contacts[theirDeviceId] = {
+alias,
+deviceId: theirDeviceId,
+genesisHash: theirGenesisHash,
+chainTip: undefined,
+addedAt: Date.now()
+};
+}
+After Transaction:
+function updateChainTip(theirDeviceId: string, newChainTip: string) {
+if (contacts[theirDeviceId]) {
+contacts[theirDeviceId]×chainTip = newChainTip;
+}
+}
+⸻
+Key Security/Workflow Points
+• No accounts/passwords: All identity is cryptographically bound.
+• Genesis/DBRW required: Prevents impersonation.
+• Contacts must be verified before first tx: All by Genesis from
+decentralized storage.
+• ChainTip keeps bilateral state atomic and in sync.
+• Frontend only handles UI/alias, never secrets.
+• Backend/Bridge enforces all cryptographic checks, state updates,
+and proof verification.
+⸻
+⸻
+DSM Identity Genesis: Precise Protocol Reference
+Every DSM identity genesis is created by a real MPC (Multi-Party
+Computation) protocol involving BOTH:
+• The user’s client device (phone, etc.)
+• A set of decentralized storage nodes (selected for the genesis event)
+All parties contribute entropy and participate as equal MPC participants, and
+all use DBRW (Dual-Binding Random Walk) to bind their share.
+⸻
+Step-by-Step Genesis Workflow
+1. Genesis Initiation:
+• Frontend: User presses “Create Identity.”
+• Backend: Starts MPC protocol session, selecting (randomly or
+deterministically) a set of DSM storage nodes as co-participants.
+2. Entropy & DBRW Binding:
+• Each storage node generates its entropy share, runs DBRW
+over its hardware/env.
+• Client device also generates an entropy share and runs DBRW
+using its own device fingerprint/environment.
+• All parties produce their MPC share as:
+e
+_i = DBRW(device_fingerprint_i, env_
+state
+_i, session_nonce)
+• All shares are cryptographically mixed as part of the MPC.
+3. MPC Execution:
+• All parties (nodes + client) run the MPC protocol (e.g.,
+quantum-safe threshold scheme or distributed keygen).
+• The combined output produces the canonical genesis state:
+S
+_0 = H(MPC_
+shares
+_1..n || genesis_params)
+• No single party—including the client—can bias or predict the
+final result.
+4. Publishing Genesis:
+• The resulting genesis state and the cryptographic transcript
+(MPC/DBRW proof) are published by the storage nodes to
+decentralized storage.
+• Genesis state hash becomes the canonical identity root.
+5. Genesis Reference Returned:
+• The client device receives its genesis state reference/hash,
+which is now retrievable and verifiable by anyone via decentralized
+storage.
+⸻
+Contact Setup and Storage (Non-Optional):
+• To transact, users must add a counterparty as a contact while online,
+which means:
+1. Retrieve the contact’s genesis state from decentralized
+storage.
+2. Verify the MPC/DBRW proof (against storage node and
+client device signatures).
+3. Store the contact in the wallet by:
+• alias (user-chosen or provided)
+• device
+_id (contact’s device, unique)
+• genesis_hash (root from decentralized storage)
+• chain
+_tip (latest state if already transacted)
+⸻
+Storage Model for Contacts:
+Each contact is stored as a structured entry:
+{
+"alias": "Alice",
+"device
+_id": "abc1234",
+"genesis_hash": "H(S_0^Alice)",
+"chain
+_tip": "H(S_n^Alice)" // optional if not yet transacted
+}
+⸻
+Summary Table for Code:
+Phase Who Participates Key Mechanism Where Stored
+Genesis Creation Client + Storage Nodes MPC + DBRW, Quantum-Safe Hash
+Decentralized Storage
+Contact Addition Client (Online) Genesis/MPC/DBRW Verification Local Wallet
+DB
+⸻
+Bottom Line:
+• Genesis creation always = (client + storage nodes) in MPC + DBRW.
+• Contact setup is mandatory, and always validated from
+decentralized storage.
+• Contact entries are indexed by alias, device ID, genesis hash, and
+chain tip.
+⸻
+⸻
+DSM: Advanced Cryptographic Identity, State, and Commitment Protocols
+⸻
+1. Hierarchical Merkle Tree for Multi-Device Identity
+1.1 Device Sub-Genesis Derivation
+• Root Identity: User’s “master” genesis state is created via standard
+MPC+DBRW with the client and storage nodes.
+• For each device:
+Sub-genesis is derived as:
+S0
+_deviceX = H(S0_master || device_
+id
+_X || device_entropy_X)
+• No device ever creates an independent root—only sub-genesis from the
+canonical master.
+1.2 Merkle Tree Aggregation
+• All device sub-genesis hashes aggregated into one master Merkle root:
+MerkleRoot = Merkle(H(S0_device1), H(S0_device2), ...)
+• Merkle proofs allow any device to prove it belongs to the identity root
+without revealing others.
+1.3 Device Chains and Cross-Device Auth
+• Each device runs its own hash chain:
+Chain
+_deviceX = [S0_deviceX, S1_deviceX, ..., Sn_deviceX]
+• Verifiers check:
+1. Merkle proof: S0_
+deviceX ∈ MerkleRoot (linked to master)
+2. Valid chain from S0
+deviceX → Sn
+_
+_deviceX (no gaps/rewrites)
+1.4 Device Revocation/Recovery
+• If a device is compromised/lost:
+• Its sub-genesis is flagged/revoked in the Merkle root.
+• New device: generate new sub-genesis, add to Merkle root.
+• Other devices/chains remain valid and unaffected.
+⸻
+2. State Evolution and Key Rotation
+2.1 Forward-Only Entropy and Ephemeral Keys
+• Every state step:
+en+1 = H(en || op_n+1 || n+1)
+• en = previous entropy, op = operation, n = state index.
+• Ephemeral Key for Each State:
+(shared_n+1, encapsulated_n+1) = KyberEnc(pkr, en+1)
+en+1' = H(shared_n+1)
+• Keys are never reused; each state has a unique quantum-safe key.
+2.2 Security
+• Modifying any state requires a hash collision or key forgery (infeasible).
+• Key compromise only affects one state; future states are secure due to
+entropy/key evolution.
+⸻
+3. Pre-Signature Commitment and Fork Prevention
+3.1 Mandatory Commitment Phase
+• Before a state is finalized:
+C
+_pre = H( H(S_n) || op_n+1 || e_n+1 )
+• Both parties (sender/recipient) co-sign C_pre before finalizing S_
+n+1.
+• S
+_
+n+1 cannot be produced by either side unless both have signed off.
+3.2 Double-Spend/Fork Resistance
+• Impossible to create two valid S
+n+1 from one S
+_
+_n without forging the
+other’s signature.
+3.3 Offline Security
+• Commitments exchanged over proximity (Bluetooth/NFC) allow for
+offline double-spend prevention.
+• When re-synced, both parties’ chains reflect the single, co-signed state.
+3.4 Forward Commitments
+• Future actions can be cryptographically referenced (“pre-committed”) in
+the current state to allow programmable, multi-stage protocols without Turing-
+complete code:
+S
+_n+1 includes H(future_params) for S_n+2, etc.
+⸻
+4. Transaction Modalities
+4.1 Unilateral (Online) Transactions
+• Only sender is active; transaction sent to decentralized directory/
+storage.
+at the time).
+• Counterparty independently verifies on retrieval (no live co-sign required
+4.2 Bilateral (Offline) Transactions
+• Both devices are present; commitment phase and state attestation are
+completed directly and synchronously (e.g., via Bluetooth).
+• Both parties instantly verify, co-sign, and update their chains without
+internet.
+⸻
+5. Pseudocode Snippets
+Sub-Genesis Creation:
+fn create
+sub
+_
+_genesis(master: &State, device_id: &str, device_entropy: &[u8]) ->
+State {
+let preimage = concat(master.hash(), device_
+id.as
+_bytes(), device_entropy);
+State::new(hash(preimage))
+}
+Ephemeral Key Evolution:
+fn evolve
+_entropy(entropy: &[u8], op: &Operation, n: u64) -> [u8; 32] {
+hash(concat(entropy, op.bytes(), n.to_
+le
+_bytes()))
+}
+Pre-Signature Commitment:
+let c
+_pre = hash(concat(prev_state.hash(), op.bytes(), new_entropy));
+let signature_sender = sign(sender_sk, c_pre);
+let signature_recipient = sign(recipient_sk, c_pre);
+// Both signatures required before finalizing new state
+⸻
+Summary Table
+Feature Mechanism Security/Recovery
+Multi-Device Identity Merkle tree of sub-genesis states Revocation by
+updating Merkle root
+State Evolution Forward-only entropy + ephemeral keys No retroactive
+compromise
+Fork/Double-Spend Prevention Pre-signature commitments (co-sign)
+Impossible to fork w/o forgery
+Offline/Online Tx Bilateral/offline: co-sign commitments All chains sync to
+same truth
+⸻
+Absolutely—here’s the production-ready, reference-grade workflow for DSM
+transaction modalities, integrating your detail requirements, including granular
+operational sequences, security rationale, and implementation logic for both
+unilateral (online) and bilateral (offline) transactions.
+⸻
+DSM Transaction Workflow Models: Implementation Reference
+1. Unilateral (Online) Transaction
+Operational Sequence
+1. Genesis Verification
+• Entity A (sender) retrieves Entity B’s genesis state (from
+decentralized storage node).
+• Verifies B’s genesis with Merkle/DBRW proof—must be done online at
+contact creation.
+2. State Construction
+• A constructs a new state S
+_{n+1}:
+• Encodes transfer:
+S
+_{n+1} = {prev_hash: H(S_n), op: transfer_
+to
+_B, Δ: token
+_amount, ...}
+• Uses forward entropy/key evolution.
+3. State Submission
+• A publishes S_{n+1} to decentralized storage (DSM node/directory).
+4. Finality
+• For A: Transaction is final as soon as S
+_{n+1} is published.
+• For B: Upon reconnecting, retrieves S
+_{n+1}, verifies the hash chain,
+and updates their chain tip.
+5. Responsive Actions
+• B cannot send dependent transactions until synchronized with directory
+and state chain is updated.
+Code Responsibility
+• Backend: Storage nodes validate, store, and serve genesis/state chain
+proofs.
+• Frontend:
+• Requests genesis at contact add (one-time, online).
+• Publishes new state.
+• Triggers UI sync when state chain updates.
+Pseudocode
+// On contact add (frontend)
+fn add
+_contact(alias, genesis_hash, device_id) {
+// Fetch & verify genesis from storage node
+let genesis = fetch_
+from
+_storage(genesis_hash);
+assert!(verify_genesis(genesis, device_id));
+store
+_contact(alias, device_id, genesis_hash, None); // No chain tip yet
+}
+// Send transaction (frontend)
+fn send
+_tokens(contact, amount) {
+let state
+_n = get_
+last
+_state();
+let entropy_
+n1 = evolve
+_entropy(state_n.entropy, amount, state_n.n + 1);
+let new
+_state = State::new(
+prev_
+hash = state
+_
+n×hash(),
+op = "transfer",
+to = contact.device
+_id,
+amount,
+entropy = entropy_
+n1
+);
+publish_state(new_state); // Backend API call
+}
+⸻
+2. Bilateral (Offline) Transaction
+Operational Sequence
+1. Precondition
+• Both entities must be synchronized to the latest shared state for this
+relationship.
+• If pending online tx exist, must sync first!
+2. Proximity Establishment
+• Entities A & B connect locally (Bluetooth/NFC).
+3. Commitment Phase
+• A generates pre-commitment hash:
+C
+_pre = H(H(S_m) || op || Δ || e_{m+1})
+• Both A and B co-sign C_pre (mutual attestation).
+4. State Finalization
+• Both A and B generate and store new state:
+S
+_{m+1} = {prev_hash: H(S_m), op, Δ, ...}
+• Both update their local chain tip for this contact.
+5. Deferred Synchronization
+• Upon next online connection, both publish their updated chain tip/state
+to directory.
+• The global system synchronizes when available, but offline state is
+immediately final and mutually agreed.
+Data Storage
+• Each contact in wallet: {alias, device_id, genesis_hash, last_
+chain
+_tip}
+• Both hash chains updated locally after each bilateral tx.
+Security Guarantees
+• Double-Spend Impossible: Both sides must sign.
+• Non-Repudiation: Mutual signatures serve as proof of participation and
+state observation.
+• Synchronization Constraint:
+• If you missed online updates with this contact, must sync first!
+• Can transact offline with other contacts regardless.
+Pseudocode
+// Precondition check (frontend)
+fn can
+transact
+_
+_offline(contact) -> bool {
+// Return false if unsynced with contact
+return !has
+_pending_
+online
+_txs(contact);
+}
+// Commitment and attestation (frontend)
+fn offline
+_transfer(contact, amount) {
+assert!(can_
+transact
+_offline(contact));
+let state
+_m = get_
+last
+state
+with
+_
+_
+_contact(contact);
+let entropy_
+m1 = evolve
+_entropy(state_m.entropy, amount, state_m.n + 1);
+let c
+_pre = hash(hash(state_m) + "transfer" + amount + entropy_m1);
+let sig_a = sign(my_sk, c_pre);
+send
+over
+_
+_bluetooth(contact, c_pre, sig_a);
+// Wait for B's signature
+let sig_
+b = receive
+_signature(contact);
+assert!(verify_sig(contact.pk, c_pre, sig_b));
+// Both update state
+let new
+_state = State::new(prev_
+hash = state
+_
+m×hash(), op = "transfer", to =
+contact.device
+_id, amount, entropy = entropy_m1);
+store
+new
+_
+_state(contact, new_state);
+}
+⸻
+3. Example: Offline Asset Swap (AR Game)
+Protocol Sequence:
+1. Initiator creates exchange offer:
+let exchangeParams = "E1:" + assetA×id + ",E2:" + assetB.id + "," + exchangeId;
+let nextEntropy = calcNextEntropy(state.entropy, exchangeParams, state.stateNum
++ 1);
+let hashCommitment = hash(hash(state) + exchangeParams + nextEntropy);
+let sig = sign(state.privateKey, hashCommitment);
+// Send to peer via Bluetooth
+2. Recipient verifies and co-signs:
+let expectedParams = ...; // Construct as above
+let expectedEntropy = ...; // As above
+let expectedHash = hash(hash(state) + expectedParams + expectedEntropy);
+if (offer.exchangeHash !== expectedHash) reject();
+let coSig = sign(state.privateKey, expectedHash);
+// Return coSig to initiator
+3. Both finalize state:
+let newStateE1 = createNewState(e1State, exchangeHash, exchangeParams);
+let newStateE2 = createNewState(e2State, exchangeHash, exchangeParams);
+// Both store and sign their new states
+4. Deferred sync to global directory on reconnection.
+⸻
+4. Summary Table
+Mode Network? Security Binding Storage/Finality Double Spend?
+Recovery
+retrieval
+attestation
+Online Yes Unilateral, published Dir. (DSM node) Impossible Sync on
+Offline No Bilateral, co-signed Local (sync later) Impossible Mutual
+⸻
+Every transaction is provably unique, double-spend-immune, and
+independently verifiable.
+The architecture dynamically defaults to the strictest model possible based on
+connectivity, always guaranteeing mathematical safety and cryptographic
+auditability.
+Here’s a concise, production-grade, non-redundant reference for the next set
+of core DSM protocol mechanics, with equations and critical concepts explicitly
+preserved for AI code assistance and protocol implementers.
+⸻
+18. Token Management and Atomic State Transitions
+Atomicity
+• Every token operation is inseparable from a state transition:
+$$ B
+_{n+1} = B_n + \Delta_{n+1}, \quad B_{n+1} \geq 0 $$
+• $\Delta_{n+1}$: Balance change at this state (positive for recipient,
+negative for sender).
+• Non-negativity ensures no overdrafts.
+State Structure (token transfer):
+S
+_{n+1} = (e'_{n+1}, \text{encapsulated}_{n+1}, T_{n+1}, B_{n+1}, H(S_n),
+op_{n+1})
+• Any tampering with B_{n+1} or related fields breaks the hash chain and
+fails verification.
+Token Conservation/Auditability:
+• All token movements sum to zero across the protocol (no inflation, no
+leakage):
+$$ \sum \Delta_{\text{all}} = 0 $$
+⸻
+19. Paradigmatic Transition: Eliminating the Account Model
+• No external user accounts, usernames, or passwords.
+• Identity is a cryptographic, forward-only chain—the only “ownership”
+is control over your private key and deterministic state.
+• Balances, credentials, and logic are part of your self-contained chain—
+no databases, no rollback, no custodial authority.
+• Proof of access = Proof of valid state transition.
+• No rollback or freezes—immutability enforced by math.
+⸻
+20. Recovery and Invalidation Mechanisms
+Snapshot Recovery:
+• Store an encrypted snapshot of a safe state:
+$$ M(S_n) = E(\text{key}_{\text{recovery}}, S_n) $$
+• E: quantum-resistant symmetric encryption.
+• key derived from user material.
+Invalidation Marker:
+• If compromised, publish:
+$$ I(S_k) = (k, H(S_k), e_k, \sigma_I, m) $$
+• $\sigma_I$: Signature from the recovery key.
+• All states after $S_k$ are invalid.
+Recovery Re-entry:
+• New seed after compromise:
+$$ e
+_{new} = H(e_k | “RECOVERY” | \text{timestamp}) $$
+• Clean bifurcation—compromised branch pruned, pre-compromise
+remains valid.
+⸻
+21. Efficient Hash Chain Traversal
+Sparse Index:
+• Fast lookups via checkpoints:
+$$ SI = {S_0, S_k, S_{2k}, \ldots, S_{nk}} $$
+• k: Interval parameter.
+• Verification Complexity:
+$$ O(\log n) $$
+• Efficient even for large chains or on resource-limited devices.
+⸻
+22. Quantum-Resistant Hash Chain Verification
+• Key material and genesis entropy:
+$$ \text{derivedEntropy} = H(\text{user secret} | \text{device id} | \text{mpc
+contrib} | \text{app id} | \text{device salt}) $$
+• Keypair generation:
+$$ (\text{pk}\text{Kyber}, \text{sk}\text{Kyber}, \text{pk}\text{SPHINCS}, \text{sk}
+\text{SPHINCS}) = \text{DeriveKeypairs}(\text{derivedEntropy}) $$
+$$ \text{genesis hash} = H(\text{pk}\text{Kyber} | \text{pk}\text{SPHINCS}) $$
+• Security: All state transitions are only forgeable if the underlying post-
+quantum primitives are broken.
+⸻
+23. Quantum-Resistant Decentralized Storage Architecture
+Requirements:
+• Quantum resistance: All protocol cryptography is post-quantum.
+• Information-theoretic privacy: State data is always encrypted; storage
+nodes cannot read or forge.
+• Byzantine Fault Tolerance: Deterministic replication for data
+redundancy and censorship-resistance.
+• Computational Efficiency: Designed for real-time, low-latency
+operation, suitable for mobile and IoT.
+⸻
+Summary Table: Core Properties
+Feature Guarantee/Equation Implementation Key Point
+Token atomicity $B
+_{n+1} = B_n + \Delta_{n+1}, B_{n+1}\geq 0$ Only valid
+transitions update balance
+Auditability $\sum \Delta_{\text{all}} = 0$ Total token supply conserved
+Identity Forward-only hash chainNo accounts, no rollback, no passwords
+Recovery $M(S_n) = E(\text{key}_{rec}, S_n)$ Encrypted snapshots +
+invalidation marker
+Traversal $O(\log n)$ via sparse index Fast even for long chains
+Verification All post-quantum (Kyber, SPHINCS, BLAKE3) No classical
+cryptographic weaknesses
+Storage Encrypted, redundant, quantum-resistant No trusted storage node
+required
+⸻
+This is perfect as a DSM protocol transaction workflow reference—here’s a
+final, production-grade composite based on your structure, with all granular,
+code-assist-grade details, correct cryptographic reasoning, and critical
+storage rules. This is ready for developer docs, code integration, or AI copilot
+prompt injection.
+⸻
+DSM Transaction Modalities: Production Reference
+⸻
+1. Unilateral (Online) Transaction
+Operational Sequence
+1. Genesis Verification
+• Sender (A) fetches recipient’s (B) genesis state from decentralized
+storage.
+contact creation).
+2. State Construction
+• A constructs next state:
+• Verifies B’s genesis using Merkle/DBRW proof (online, one-time at
+S
+_{n+1} = {
+prev_hash: H(S_n),
+op: "transfer_
+to
+_B",
+Δ: token
+_amount,
+entropy: e_{n+1},
+...
+}
+• Uses evolved entropy/key material per DSM state evolution rules.
+3. State Submission
+• A publishes S_{n+1} to a decentralized DSM node/directory.
+4. Finality
+• For A: Transaction final on publish.
+• For B: Retrieves S
+_{n+1} on next connection, verifies hash chain, and
+updates their tip.
+5. Responsive Actions
+• B cannot send dependent txs until synchronized (must have S_{n+1} in
+local chain).
+⸻
+Code & Storage
+• Backend: Storage nodes serve/validate genesis and state chains,
+maintain proofs.
+• Frontend:
+• On contact add: requests genesis, verifies, stores {alias, device_id,
+genesis_hash, last_
+chain
+_tip}.
+• Publishes new state.
+• Syncs UI when state chain updates.
+// Add contact (frontend, pseudocode)
+fn add
+_contact(alias, genesis_hash, device_id) {
+let genesis = fetch_
+from
+_storage(genesis_hash);
+assert!(verify_genesis(genesis, device_id));
+store
+_contact(alias, device_id, genesis_hash, None);
+}
+// Send tokens (frontend)
+fn send
+_tokens(contact, amount) {
+let state
+_n = get_
+last
+_state();
+let entropy_
+n1 = evolve
+_entropy(state_n.entropy, amount, state_n.n + 1);
+let new
+_state = State::new(
+prev_
+hash = state
+_
+n×hash(),
+op = "transfer",
+to = contact.device
+_id,
+amount,
+entropy = entropy_
+n1
+);
+publish_state(new_state);
+}
+⸻
+2. Bilateral (Offline) Transaction
+Operational Sequence
+1. Precondition
+• Both must be at the latest shared state (last_
+chain
+_tip for this contact).
+• If pending online tx exists with this contact, sync first.
+2. Proximity Establishment
+• Entities connect locally (Bluetooth/NFC).
+3. Commitment Phase
+• A generates pre-commitment:
+C
+_pre = H(H(S_m) || op || Δ || e_{m+1})
+• Both A & B co-sign C_pre (mutual attestation).
+4. State Finalization
+• Both A & B generate and store:
+S
+_{m+1} = {prev_hash: H(S_m), op, Δ, ...}
+• Update last_
+chain
+_tip for this contact in local wallet.
+5. Deferred Synchronization
+• On reconnection, each publishes latest state(s) to directory.
+⸻
+Security Guarantees
+• Double-spend impossible: Both sides sign; can’t be replayed or forged.
+• Non-repudiation: Both signatures are cryptographic proof.
+• Synchronization constraint: Pending online updates with this contact
+must be synced first; can transact offline with others.
+⸻
+Code & Storage
+fn can
+transact
+_
+_offline(contact) -> bool {
+// False if unsynced with this contact
+!has
+_pending_
+online
+_txs(contact)
+}
+fn offline
+_transfer(contact, amount) {
+assert!(can_
+transact
+_offline(contact));
+let state
+_m = get_
+last
+state
+with
+_
+_
+_contact(contact);
+let entropy_
+m1 = evolve
+_entropy(state_m.entropy, amount, state_m.n + 1);
+let c
+_pre = hash(hash(state_m) + "transfer" + amount + entropy_m1);
+let sig_a = sign(my_sk, c_pre);
+send
+over
+_
+_bluetooth(contact, c_pre, sig_a);
+let sig_
+b = receive
+_signature(contact);
+assert!(verify_sig(contact.pk, c_pre, sig_b));
+let new
+_state = State::new(prev_
+hash = state
+_
+m×hash(), op = "transfer", to =
+contact.device
+_id, amount, entropy = entropy_m1);
+store
+new
+_
+_state(contact, new_state);
+}
+• Storage per contact: {alias, device_id, genesis_hash, last_
+chain
+_tip}
+⸻
+3. Example: Offline Asset Swap (AR Game)
+Protocol:
+1. Initiator:
+• Create and sign exchange hash, send via Bluetooth.
+2. Recipient:
+• Verify, co-sign, return signature.
+3. Both:
+• Store new signed states locally.
+4. Deferred sync:
+• Both publish updated state(s) when online.
+⸻
+4. Summary Table
+Mode Network? Security Binding Storage/Finality Double Spend?
+Recovery
+retrieval
+attestation
+Online Yes Unilateral, pub. Dir. (DSM node) Impossible Sync on
+Offline No Bilateral, co-sig Local (sync later) Impossible Mutual
+⸻
+Key Principles:
+• All tx are unique, double-spend immune, and locally or globally
+verifiable.
+• Storage per contact is always {alias, device_id, genesis_hash,
+last
+chain
+_
+_tip}.
+• Always use MPC (client + nodes) for Genesis.
+• Contact creation is mandatory for transactions.
+• All math/security invariants (see above) are enforced per transaction.
+⸻
+18. Token Management and Atomic State Transitions
+• Atomicity
+Every token operation inseparable from a state transition:
+$$
+B
+_{n+1} = B_n + \Delta_{n+1}, \quad B_{n+1} \geq 0
+$$
+• $\Delta_{n+1}$: Balance delta (positive for recipient, negative for
+sender)
+• Non-negativity: Overdraft impossible.
+• State Structure (token transfer):
+$$
+S
+_{n+1} = (e’{n+1}, \text{encapsulated}{n+1}, T_{n+1}, B_{n+1}, H(S_n),
+op_{n+1})
+$$
+• Tampering with $B
+_{n+1}$ or any field invalidates hash chain.
+• Token Conservation & Auditability:
+$$
+\sum \Delta_{\text{all}} = 0
+$$
+• No inflation or leakage; total supply always preserved.
+⸻
+19. Paradigmatic Transition: Eliminating the Account Model
+• No accounts, usernames, or passwords
+• Identity: Only your private key and deterministic hash chain.
+• Balances, credentials, logic: Self-contained in your chain (no DBs, no
+rollback, no custodians).
+• Proof of access = valid state transition
+• Immutability by math: No rollback, no freeze, no admin override.
+⸻
+20. Recovery and Invalidation Mechanisms
+• Snapshot Recovery:
+$$
+$$
+M(S_n) = E(\text{key}_{\text{recovery}}, S_n)
+• $E$ = quantum-resistant symmetric encryption; key is user-
+derived.
+• Invalidation Marker:
+If compromised, publish:
+$$
+I(S_k) = (k, H(S_k), e_k, \sigma_I, m)
+$$
+• $\sigma_
+I$ = signature from recovery key.
+• All states after $S
+k$ are invalid.
+_
+• Recovery Re-entry:
+New entropy seed:
+$$
+e
+_{\text{new}} = H(e_k \mid \text{“RECOVERY”} \mid \text{timestamp})
+$$
+• Clean branch, pre-compromise remains valid, post-compromise
+pruned.
+⸻
+21. Efficient Hash Chain Traversal
+• Sparse Index for fast lookups:
+$$
+SI = { S_0, S_k, S_{2k}, …, S_{nk} }
+$$
+• $k$: Interval parameter.
+• Verification complexity:
+$$
+O(\log n)
+$$
+• Resource efficient, even for long chains/mobile.
+⸻
+22. Quantum-Resistant Hash Chain Verification
+• Derived entropy (for genesis, keys):
+$$
+\text{derivedEntropy} = H(\text{user secret} \mid \text{device id} \mid
+\text{mpc contrib} \mid \text{app id} \mid \text{device salt})
+$$
+$$
+$$
+$$
+$$
+• Keypair generation:
+(\text{pk}{\text{Kyber}}, \text{sk}{\text{Kyber}}, \text{pk}{\text{SPHINCS}},
+\text{sk}{\text{SPHINCS}}) = \text{DeriveKeypairs}(\text{derivedEntropy})
+\text{genesis hash} = H(\text{pk}{\text{Kyber}} \mid \text{pk}{\text{SPHINCS}})
+• Security:
+Transitions only forgeable if quantum-safe primitives are broken.
+⸻
+23. Quantum-Resistant Decentralized Storage Architecture
+• Requirements:
+• Quantum resistance: All primitives post-quantum.
+• Info-theoretic privacy: State always encrypted, node-operator
+blind.
+• Byzantine fault-tolerance: Deterministic replication/redundancy.
+• Computational efficiency: Real-time, low-latency, mobile/IoT
+compatible.
+⸻
+Summary Table: Core Properties
+Feature Guarantee / Equation Implementation Key Point
+Token atomicity $B
+_{n+1} = B_n + \Delta_{n+1},; B_{n+1} \geq 0$ Only valid
+transitions update balance
+Auditability $\sum \Delta_{\text{all}} = 0$ Total supply always conserved
+Identity Forward-only hash chainNo accounts, rollback, passwords
+Recovery $M(S_n) = E(\text{key}_{rec}, S_n)$ Encrypted snapshot, invalidation
+marker
+Traversal $O(\log n)$ via sparse index Fast lookup, even at large scale
+Verification All post-quantum (Kyber, SPHINCS, BLAKE3) No classical
+weaknesses
+Storage Encrypted, redundant, quantum-resistant No trust in storage nodes
+required
+⸻
+⸻
+27. Deterministic Limbo Vault (DLV): Trustless, Deterministic Asset
+Encumbrance
+Core Idea:
+• DLV = a vault whose private key cannot be derived or used until strict
+cryptographic conditions are met, with all logic deterministic and verifiable.
+• No external signatures, oracles, or ZK-proofs needed; only hash chain
+and condition-attestation via DSM states.
+⸻
+27.1 DLV Definition & Lifecycle
+DLV is the tuple:
+$$
+V = (L, C, H)
+$$
+• $L$: Lock condition function, $L:\Omega \to {0,1}$
+• $C$: Set of condition parameters ${c_1, …, c_n}$
+• $H$: Collision-resistant hash (BLAKE3)
+Commitment:
+$$
+C
+_{\text{initial}} = H(L \parallel C)
+$$
+• Registered to decentralized storage as "vault_
+id": C
+_{\text{initial}}
+Lifecycle:
+1. Vault Creation: Publish $C
+_{\text{initial}}$ (commitment, lock
+params) to storage.
+2. Asset Encumbrance: Transfer to vault address—no private key
+exists yet.
+3. Condition Fulfillment: When $L(C)$ satisfied, reference state(s)
+as proof $\sigma$.
+4. Key Derivation:
+$$
+sk
+_V = H(L \parallel C \parallel \sigma)
+$$
+Assets released; only possible after fulfillment.
+VaultPost Schema Example (JSON):
+{
+"vault
+_id": "H(L || C)",
+"lock
+_description": "repayment confirmed OR timeout",
+"creator
+id": "vault
+creator
+_
+_
+_ID",
+"commitment
+_hash": "Blake3(payload_commitment)",
+"timestamp_created": 1745623490,
+"status": "unresolved",
+"metadata": {
+"purpose": "loan settlement",
+"timeout": 1745723490
+}
+}
+⸻
+27.2 Resolution/Verification Reference
+• Resolution: Only possible with both commitment and attestation/proof
+from DSM state.
+• Pseudocode:
+fn resolve
+_vault(local_state: &State, incoming_state: &State, vault_hash: &Hash)
+-> bool {
+let expected = hash(local_state.hash() + incoming_
+state.commitment +
+incoming_state.something);
+if expected != *vault
+_hash { return false; }
+if !check
+lock
+_
+_condition(local_state, incoming_state) { return false; }
+if incoming_state.prev_
+hash != local
+_state.hash() { return false; }
+true // Vault resolved
+}
+• Unlocking key derivation only possible after:
+• Hash chain verifies
+• Lock condition met
+Security:
+• $sk
+_
+V$ cannot be derived before $\sigma$ (the proof) is known:
+$$
+\Pr[\text{Derive}(sk_V) \mid \neg\text{Has}(\sigma)] \leq \epsilon(\lambda)
+$$
+(negligible for security parameter $\lambda$)
+• Quantum resistant: All hash, signature, and key operations are post-
+quantum (BLAKE3, SPHINCS+, Kyber).
+⸻
+27.3 DLV Design Guarantees
+• No pre-computable key: Private key does not exist until lock condition
+is met and proof produced.
+• No trusted party: No ZK, oracle, or external attestation required.
+• Offline compatible: All operations are deterministic, storage-backed,
+and cacheable.
+• Full auditability: Vault creation, condition, and unlock all leave
+cryptographic traces.
+⸻
+28. DSM Economic & Verification Model
+28.1 Subscription-Based Economics
+• No gas: No per-transaction fees.
+• Users pay for storage used (periodic subscription; e.g. per GB, per
+chain length).
+• Token creation fee: One-time DSM token fee to prevent spam.
+• Resource distribution:
+$$
+R
+_{total} = R_{storage} + R_{treasury} + R_{ecosystem}
+$$
+• $R
+_{storage}$: Storage node operators
+• $R
+_{treasury}$: Protocol maintenance
+• $R
+_{ecosystem}$: Onboarding, dev support
+28.2 Cryptographic-Only Verification
+• All validation = deterministic hash chain + signature checks.
+• No economic incentive needed to reject fraud:
+$$
+V(H, S_n, S_{n+1}, \sigma_C) \to {true, false}
+$$
+• $H$: Hash function
+• $\sigma_
+C$: Signatures from required entities
+• Selective Disclosure:
+• Only minimum necessary data exposed, rest remains
+encrypted.
+28.3 Security Model
+• All critical state transitions require:
+• Hash chain integrity
+• Deterministic entropy progression
+• Balance conservation
+• Monotonic state number
+• Signature checks
+• Pre-commitment inclusion
+• Non-Turing complete:
+• All state transitions are statically analyzable, finite,
+deterministic, and guaranteed to terminate.
+⸻
+29. Bilateral Control Attack & Defenses
+• Attack: If one party controls both ends of a transaction, can produce
+two conflicting but valid-appearing states.
+• Mitigations:
+• Threshold Genesis: t-of-n MPC at genesis, making Sybil
+attacks hard.
+• Directory Consistency: Detects conflicts on sync.
+• Bilateral Isolation: External parties can cross-verify histories.
+• Network effect: As number of honest relationships increases,
+attack becomes infeasible.
+• Formally:
+$$
+P(\text{double spend}) \leq \min{
+P(\text{genesis threshold control}),
+P(\text{network partition}),
+P(\text{verification isolation})
+}
+$$
+• All approach zero as network grows, threshold increases.
+• Mathematical invariants enforce security even under adversarial
+control:
+• Hash continuity, deterministic entropy, balance, monotonic
+state, signature, pre-commitments.
+⸻
+DLV + Economics Recap Table
+Property Guarantee/Equation Implementation Note
+Vault lock$C
+_{initial} = H(L|C)$ No key, no access until conditions met
+Key unlock $sk
+_V = H(L|C|\sigma)$ Only computable w/ proof of fulfillment
+EconomicNo gas, only storage fees Predictable, aligns cost to usage
+Token create One-time DSM fee Anti-spam
+Verification verified
+$V(H, S_n, S_{n+1}, \sigma)$ All transitions cryptographically
+Security All post-quantum, deterministic No Turing-complete exploits
+⸻
+⸻
+30. Dual-Mode State Evolution: Bilateral & Unilateral Paradigms
+30.1 Operational Modalities
+Bilateral Mode (Disconnected/Peer-to-Peer)
+• Synchronous co-signature: Both parties must mutually sign the new
+state.
+• Formalization:
+$$
+\text{BilateralTransition}(S_n, op_{n+1}) = {S_{n+1} \mid V(S_n, S_{n+1}, \sigma_A,
+\sigma_B) = \text{true}}
+$$
+• Security: Immediate, double-spend-impossible finality offline.
+• Usage: Default for offline/proximity-based operations.
+Unilateral Mode (Online/Directory-Mediated)
+• Asynchronous state: Initiator acts alone; recipient’s identity is
+directory-anchored and verified via decentralized storage.
+• Formalization:
+$$
+\text{UnilateralTransition}(S_n, op_{n+1}, ID_B) = {S_{n+1} \mid V_{uni}(S_n,
+S
+_{n+1}, \sigma_A, Dverify(ID_B)) = \text{true}}
+$$
+• Security: Sender achieves finality instantly; recipient syncs and verifies
+upon reconnection.
+• Usage: Online-first, one-sided execution.
+⸻
+30.2 Seamless Modal Interoperability
+Transparent State Consistency
+• Projection function:
+$$
+\text{StateProjection}: (S^A_n, ID_B) \to S^{A \to B}_{n+1}
+$$
+• Each state links to recipient’s directory identity, creating an “inbox” for
+sync.
+Recipient Sync Protocol
+• Algorithm:
+procedure RecipientSync(ID_B)
+PendingTx ← QueryDecentralizedStorage(ID_B)
+for tx in PendingTx:
+S
+_
+last ← GetLastState(ID_B, tx.sender)
+S
+_
+new ← tx.projectedState
+if VerifyStateTransition(S_last, S_new, tx.signature):
+ApplyStateTransition(S_last, S_new)
+else:
+RejectTransaction(tx)
+• All incoming states are cryptographically validated before
+acceptance.
+Forward Commitment Guarantee
+• Invariant:
+$$
+\forall S_n, S_{n+1} \in S: \quad Parameters(S_{n+1}) \subseteq C_{future}(S_n)
+$$
+• Effect: No unilateral tx can violate prior bilateral commitments—chain
+continuity is always enforced.
+Synchronization Precedence Theorem
+• Constraint: After a unilateral tx, no new bilateral tx with that party until
+the recipient has synced online:
+$$
+\text{PhysicalTransaction}(A, B) \implies \exists S^B_{k+1}: (S^A_{m+1},
+S^B
+_{k+1}) \in Rel_{A,B}
+$$
+• Guarantee: Prevents double-spending and state divergence.
+⸻
+30.5 Implementation Notes
+• Automatic Mode Detection:
+• Protocol detects peer presence/connectivity, auto-switches to bilateral if
+possible (security first).
+• Indexed Directory:
+• Storage nodes must index “inboxes” for every identity. Lookup: $O(\log
+n)$.
+• Quantum Safety:
+• All projections, signatures, directory proofs must use post-quantum
+primitives.
+• Enforcement:
+• All state transitions (online/offline) rigorously enforce forward
+commitments and hash chain continuity.
+⸻
+31. Implementation Considerations
+31.1 Cryptographic Foundations
+• Primitive suite:
+• BLAKE3: Hashing (state chains, SMTs, DLVs)
+• SPHINCS+: Stateless digital signatures
+• Kyber: Key encapsulation (session/entropy evolution)
+• Multi-source entropy:
+$$
+\text{seed} = H(\text{user secret} | \text{device id} | \text{mpc contrib} | \text{app
+id} | \text{device salt})
+$$
+• Ensures MPC-blind, device-blind key genesis.
+• Resource-constrained optimization:
+• All primitives must run efficiently on IoT/mobiles (no external HSM
+required).
+• Temporal consistency:
+• All time-dependent logic (timeouts, expiries) is strictly hashed—no wall
+clock trust required.
+⸻
+32. Storage Node Regulation: Cryptographically-Bound Identity
+32.1 Identity Construction
+• DeviceID:
+$$
+\text{DeviceID} = H(\text{user secret} | \text{external device id} | \text{mpc
+contribution} | \text{app id} | \text{device salt})
+$$
+• Genesis hash:
+$$
+\text{genesis hash} = H(\text{pk}{\text{Kyber}} | \text{pk}{\text{SPHINCS}})
+$$
+• Properties:
+• Unforgeable: Collision/negligible unless all entropy sources controlled.
+• Verifiable: Any party can check if state = correct derivation from seed.
+32.2 Bilateral Synchronization/Verification
+• Pairwise sample:
+• Each node checks random sample of states with peers, to ensure $\geq
+\alpha_{threshold}$ consistency.
+• Detection is exponential in omitted states (Hoeffding bound).
+32.3 Information-Theoretic Opacity
+• Node sees only hashes:
+$$
+$$
+I(\text{Content}(S_n); \text{Representation}(S_n, node_j)) = 0
+• Any censorship = random drop; cannot target by content.
+32.4 Cryptographic Exclusion
+• On verification failure, propagate signed invalidation marker for
+DeviceID.
+• Penalty:
+• Cost = identity stake + lost revenue during exclusion, grows with
+network value.
+32.5 Bounded, Deterministic Verification
+• Complexity:
+$$
+\text{Time: } O(\log |States| \cdot \beta)
+$$
+$$
+\text{Space: } O(|N|)
+$$
+• No undecidability—every state is either valid or rejected.
+32.6 Security Model
+• Sybil resistance: MPC + cost.
+• Selective state attack: Detection probability approaches 1 as more
+states omitted.
+• Manipulation attack: Only possible by hash collision.
+32.7 Nash Equilibrium Penalty
+• Compliance > violation for all rational actors as detection/penalty
+scales with network value.
+32.8/32.10 Optimization
+• O(1) DeviceID lookup (probabilistic filter)
+• O(1) genesis verification
+• All hashing uses BLAKE3, hardware-accelerated if possible
+• Checkpoint interval, SMT depth, etc., are device-tunable for
+performance
+⸻
+Table: Dual-Mode, Storage Regulation, and Security
+Component Invariant/EquationGuarantee
+$V(S_n, S_{n+1}, \sigma_A, \sigma_B)$Double-signed, offline-safe
+Bilateral finality
+Unilateral $V
+_{uni}(S_n, S_{n+1}, \sigma_A, Dverify(ID_B))$Asynchronous,
+inboxed, directory
+State sync See sync algorithm above No divergence, no double spend
+DeviceID $H(user | device | mpc | …)$ Unforgeable, verifiable identity
+Censorship $I(\text{content}; \text{representation}) = 0$ Info-theoretic,
+random-only drop
+Exclusion Signed invalidation, global propagation Permanent penalty, Nash eq.
+secured
+Verification $O(\log n)$ + deterministic outcome No ambiguous/fuzzy validity
+Hardware accel, SMT, O(1) registry, sparse index Scalable, real-
+Optimization world performant
+⸻

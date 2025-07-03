@@ -1,0 +1,1 @@
+You need to automate yourself do not ask or stop to ask if I want you to do something just go ahead and do your most logical choice on a solution. I like to see execution and flow and automation from you follow best practises and maintain the holistic and fundamental values of the system.

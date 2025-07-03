@@ -1,0 +1,41 @@
+{
+  "version": "1.0.0",
+  "name": "dsm-wallet-new",
+  "dependencies": {
+    "@tabler/icons-react": {
+      "version": "3.34.0",
+      "resolved": "https://registry.npmjs.org/@tabler/icons-react/-/icons-react-3.34.0.tgz",
+      "overridden": false
+    },
+    "jsqr": {
+      "version": "1.4.0",
+      "resolved": "https://registry.npmjs.org/jsqr/-/jsqr-1.4.0.tgz",
+      "overridden": false
+    },
+    "qr-scanner": {
+      "version": "1.4.2",
+      "resolved": "https://registry.npmjs.org/qr-scanner/-/qr-scanner-1.4.2.tgz",
+      "overridden": false
+    },
+    "qrcode": {
+      "version": "1.5.4",
+      "resolved": "https://registry.npmjs.org/qrcode/-/qrcode-1.5.4.tgz",
+      "overridden": false
+    },
+    "react-dom": {
+      "version": "18.3.1",
+      "resolved": "https://registry.npmjs.org/react-dom/-/react-dom-18.3.1.tgz",
+      "overridden": false
+    },
+    "react": {
+      "version": "18.3.1",
+      "resolved": "https://registry.npmjs.org/react/-/react-18.3.1.tgz",
+      "overridden": false
+    },
+    "styled-components": {
+      "version": "5.3.11",
+      "resolved": "https://registry.npmjs.org/styled-components/-/styled-components-5.3.11.tgz",
+      "overridden": false
+    }
+  }
+}

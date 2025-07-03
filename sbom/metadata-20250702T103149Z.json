@@ -1,0 +1,40 @@
+{
+  "generation_timestamp": "2025-07-02T10:31:55Z",
+  "generator": {
+    "name": "DSM SBOM Generator",
+    "version": "1.0.0",
+    "vendor": "DSM Project"
+  },
+  "project": {
+    "name": "DSM Protocol Suite",
+    "version": "2.1.0",
+    "description": "Quantum-resistant decentralized state machine protocol",
+    "repository": "https://github.com/dsm-project/decentralized-state-machine"
+  },
+  "components": {
+    "rust_core": {
+      "sbom_file": "dsm-core-20250702T103149Z.sbom.json",
+      "description": "Core DSM protocol implementation in Rust"
+    },
+    "storage_node": {
+      "sbom_file": "dsm-storage-node-20250702T103149Z.sbom.json", 
+      "description": "DSM storage node implementation"
+    },
+    "frontend": {
+      "sbom_file": "frontend-20250702T103149Z.sbom.json",
+      "description": "React frontend application"
+    },
+    "android": {
+      "sbom_file": "android-20250702T103149Z.sbom.json",
+      "description": "Android mobile application"
+    },
+    "consolidated": {
+      "sbom_file": "dsm-consolidated-20250702T103149Z.sbom.json",
+      "description": "Consolidated SBOM for entire project"
+    }
+  },
+  "reports": {
+    "vulnerability_report": "vulnerability-report-20250702T103149Z.json",
+    "compliance_report": "compliance-report-20250702T103149Z.md"
+  }
+}

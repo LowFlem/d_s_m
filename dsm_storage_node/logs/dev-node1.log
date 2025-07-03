@@ -1,0 +1,11 @@
+[2m2025-07-03T12:20:29.937721Z[0m [32m INFO[0m [2mstorage_node[0m[2m:[0m Loading configuration from "config-dev-node1.toml"
+[2m2025-07-03T12:20:29.940107Z[0m [32m INFO[0m [2mstorage_node[0m[2m:[0m Configuration loaded successfully
+[2m2025-07-03T12:20:29.940877Z[0m [32m INFO[0m [2mstorage_node[0m[2m:[0m Initializing SQLite storage engine at ./data-dev-node1/storage.db
+[2m2025-07-03T12:20:29.941117Z[0m [32m INFO[0m [2mdsm_storage_node::storage::sql_storage[0m[2m:[0m Creating new SQLite storage engine with database: "./data-dev-node1/storage.db"
+[2m2025-07-03T12:20:29.944931Z[0m [32m INFO[0m [2mdsm_storage_node::storage::sql_storage[0m[2m:[0m SQLite storage engine initialized successfully
+[2m2025-07-03T12:20:29.944955Z[0m [32m INFO[0m [2mstorage_node[0m[2m:[0m Initializing networking on 0.0.0.0:8080
+[2m2025-07-03T12:20:29.944959Z[0m [32m INFO[0m [2mstorage_node[0m[2m:[0m Network stack initialized. Cluster management handles peer discovery.
+[2m2025-07-03T12:20:29.945182Z[0m [32m INFO[0m [2mdsm_storage_node::logging[0m[2m:[0m [dev-node-1] NetworkConnect completed successfully in 0ms - DSM Storage Node starting on 0.0.0.0:8080
+[2m2025-07-03T12:20:29.945905Z[0m [32m INFO[0m [2mstorage_node[0m[2m:[0m Starting DSM Storage Node server on 0.0.0.0:8080
+[2m2025-07-03T12:20:29.945915Z[0m [32m INFO[0m [2mstorage_node[0m[2m:[0m DSM Storage Node ready to serve requests on 0.0.0.0:8080
+[2m2025-07-03T12:20:29.946509Z[0m [32m INFO[0m [2mstorage_node[0m[2m:[0m 🚀 DSM Storage Node ebd49cec5d6834b911f7b90544a5e9af404e2502b2effc958d8f13afef604bed is now running and healthy!

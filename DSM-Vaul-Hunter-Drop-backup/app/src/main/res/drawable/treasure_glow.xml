@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="32dp"
+    android:height="32dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Outer glow -->
+    <path
+        android:fillColor="#80FFFF00"
+        android:pathData="M12,0C5.38,0 0,5.38 0,12s5.38,12 12,12 12,-5.38 12,-12S18.62,0 12,0zM12,22c-5.52,0 -10,-4.48 -10,-10S6.48,2 12,2s10,4.48 10,10 -4.48,10 -10,10z"/>
+    
+    <!-- Treasure icon -->
+    <path
+        android:fillColor="#FFFF00"
+        android:pathData="M12,2C6.48,2 2,6.48 2,12s4.48,10 10,10 10,-4.48 10,-10S17.52,2 12,2zM12,20c-4.42,0 -8,-3.58 -8,-8s3.58,-8 8,-8 8,3.58 8,8 -3.58,8 -8,8z"/>
+    <path
+        android:fillColor="#FFFF00"
+        android:pathData="M12,6L8,10L8,16L16,16L16,10L12,6zM14,14L10,14L10,10.5L12,8.5L14,10.5L14,14z"/>
+</vector>

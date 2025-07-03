@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="@color/dsm_accent_light">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/dsm_surface" />
+            <corners android:radius="8dp" />
+            <stroke android:color="@color/dsm_accent" android:width="2dp" />
+            <!-- Glow effect through padding and multiple layers -->
+            <padding android:left="1dp" android:top="1dp" android:right="1dp" android:bottom="1dp" />
+        </shape>
+    </item>
+    <!-- Outer glow layer -->
+    <item android:id="@android:id/mask">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/dsm_accent" />
+            <corners android:radius="8dp" />
+        </shape>
+    </item>
+</ripple>
